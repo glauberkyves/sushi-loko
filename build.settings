@@ -1,0 +1,130 @@
+-- Supported values for orientation:
+-- portrait, portraitUpsideDown, landscapeLeft, landscapeRight
+
+settings = {
+	
+	orientation = {
+		default = "portrait",
+		supported = { "portrait", }
+	},
+        
+            plugins =
+             {
+        ["plugin.openssl"] =
+        {
+            publisherId = "com.coronalabs"
+        },
+        
+        ["plugin.OneSignal"] =
+        {
+            publisherId = "com.onesignal",
+        },
+        ["plugin.google.play.services"] =
+        {
+                publisherId = "com.coronalabs",
+                supportedPlatforms = { android=true, ["android-kindle"]=true },
+        },
+
+        
+    }, 
+        
+	
+	iphone = {
+		plist = {
+                        UIBackgroundModes = {"remote-notification"},
+                        NSLocationWhenInUseUsageDescription = "Esse aplicativo utiliza o mapa.",
+			UIStatusBarHidden = true,
+			UIPrerenderedIcon = true, -- set to false for "shine" overlay
+			--UIApplicationExitsOnSuspend = true, -- uncomment to quit app on suspend
+
+                            NSAppTransportSecurity =
+                         {
+                            NSExceptionDomains =
+                            {
+                               
+                                ["teste09.saude.ws"] =
+                               {
+                                  NSIncludesSubdomains = true,
+                                  NSThirdPartyExceptionAllowsInsecureHTTPLoads = true
+                               },
+                               
+                               
+                            },
+                            
+                            
+                         },
+                        
+                        
+                        
+                        CFBundleIconFiles = {
+                        "Icon.png",
+                        "Icon@2x.png",
+                        "Icon-60.png",
+                        "Icon-60@2x.png",
+                        "Icon-60@3x.png",
+                        "Icon-72.png",
+                        "Icon-72@2x.png",
+                        "Icon-76.png",
+                        "Icon-76@2x.png",
+                        "Icon-Small-40.png",
+                        "Icon-Small-40@2x.png",
+                        "Icon-Small-40@3x.png",
+                        "Icon-Small-50.png",
+                        "Icon-Small-50@2x.png",
+                        "Icon-Small.png",
+                        "Icon-Small@2x.png",
+                        "Icon-Small@3x.png"
+                    },
+
+                        
+                        
+                        UIAppFonts =
+                        {
+                            "Password.ttf", "ArialRoundedMTBold.ttf"
+                        },
+            --[[
+            -- iOS app URL schemes:
+            CFBundleURLTypes =
+            {
+                {
+                    CFBundleURLSchemes =
+                    {
+                        "fbXXXXXXXXXXXXXX", -- example scheme for facebook
+                        "coronasdkapp", -- example second scheme
+                    }
+                }
+            }
+            --]]
+		}
+	},
+	
+	
+	-- Android permissions
+
+	android =
+	{
+		permissions =
+		{
+			{ name = ".permission.C2D_MESSAGE", protectionLevel = "signature" },
+		},
+		usesPermissions =
+		{
+                        "android.permission.INTERNET",
+                        "android.permission.ACCESS_FINE_LOCATION",
+                        "android.permission.ACCESS_COARSE_LOCATION",
+                         
+		},
+                usesFeatures =
+               {
+                   -- If you set permissions "ACCESS_FINE_LOCATION" and "ACCESS_COARSE_LOCATION" above,
+                   -- you may want to set up your app to not require location services as follows.
+                   -- Otherwise, devices that do not have location sevices (such as a GPS) will be unable
+                   -- to purchase this app in the app store.
+                   { name = "android.hardware.location", required = false },
+                   { name = "android.hardware.location.gps", required = false },
+                   { name = "android.hardware.location.network", required = false }
+               },
+	},
+
+	
+}
