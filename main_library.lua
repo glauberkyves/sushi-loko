@@ -47,9 +47,9 @@ lib.bottomY = lib.topY + lib.distanceY
 lib.scaleX =  lib.distanceX/640
 lib.scaleY = lib.distanceY/960
 if lib.scaleX  > lib.scaleY then
-lib.scale = lib.scaleX
+    lib.scale = lib.scaleX
 else
-lib.scale = lib.scaleY   
+    lib.scale = lib.scaleY   
 end
 
 
@@ -62,30 +62,30 @@ function lib.criaCarregando()
     
     grupoCarregando = display.newGroup()
     
-        
-        local function tocaFundoCarregando()
-            return true
-        end
-     
-
-         local fundoRect = display.newRect( lib.leftX,lib.topY,lib.distanceX,lib.distanceY) 
-         fundoRect:setFillColor(0,0,0)
-         fundoRect.alpha = 0.7
-         fundoRect.anchorX  = 0
-         fundoRect.anchorY = 0
-         fundoRect:addEventListener("tap",tocaFundoCarregando)
-         fundoRect:addEventListener("touch",tocaFundoCarregando)
-         grupoCarregando:insert(fundoRect)
-         
-         local carregando = display.newImage("images/alertas/processando.png",lib.centerX,lib.centerY )
-         carregando.anchorY = 0.55
-         grupoCarregando:insert(carregando)
-         
-         transition.to(carregando,{rotation=carregando.rotation-16880, time=32000})
-       
-         
-         
-      
+    
+    local function tocaFundoCarregando()
+        return true
+    end
+    
+    
+    local fundoRect = display.newRect( lib.leftX,lib.topY,lib.distanceX,lib.distanceY) 
+    fundoRect:setFillColor(0,0,0)
+    fundoRect.alpha = 0.7
+    fundoRect.anchorX  = 0
+    fundoRect.anchorY = 0
+    fundoRect:addEventListener("tap",tocaFundoCarregando)
+    fundoRect:addEventListener("touch",tocaFundoCarregando)
+    grupoCarregando:insert(fundoRect)
+    
+    local carregando = display.newImage("images/alertas/processando.png",lib.centerX,lib.centerY )
+    carregando.anchorY = 0.55
+    grupoCarregando:insert(carregando)
+    
+    transition.to(carregando,{rotation=carregando.rotation-16880, time=32000})
+    
+    
+    
+    
 end
 function lib.deletaCarregando()
     
@@ -105,17 +105,17 @@ lib.mensagemErro = "Ops, algo deu errado. Tente novamente mais tarde."
 --lib.url = "http://127.0.0.1:8000/"
 --lib.url = "http://192.168.25.222:8000/"
 --lib.url = "http://192.168.25.223:8000/"
-lib.url = "http://teste09.saude.ws/"
+lib.url = "http://ec2-52-34-184-94.us-west-2.compute.amazonaws.com/"
 
 
 function lib.urlEncode( str )
-   if ( str ) then
-      str = string.gsub( str, "\n", "\r\n" )
-      str = string.gsub( str, "([^%w ])",
-         function (c) return string.format( "%%%02X", string.byte(c) ) end )
-      str = string.gsub( str, " ", "+" )
-   end
-   return str
+    if ( str ) then
+        str = string.gsub( str, "\n", "\r\n" )
+        str = string.gsub( str, "([^%w ])",
+        function (c) return string.format( "%%%02X", string.byte(c) ) end )
+        str = string.gsub( str, " ", "+" )
+    end
+    return str
 end
 function lib.decryptRequest(value)
     return lib.cypher:decrypt(lib.mime.unb64(value), lib.key, lib.iv)
@@ -124,88 +124,88 @@ function lib.encryptRequest(value)
     return lib.mime.b64(lib.cypher:encrypt(lib.json.encode(value), lib.key, lib.iv))
 end
 function lib.servicos(tabelaDados,urlServico,funcaoRetorno,validoFalseFunc)
-
-        local decoded
-        local URL = lib.url..urlServico
-        --local URL = lib.url
-        
-        tabelaDados["idFranqueador"] = lib.idFranqueador
-        
-        local params = {}
-        --params.body  = "token="..lib.urlEncode(lib.encryptRequest({["cpf"]= cpf,["senha"]= senha}))
-        params.body  = "token="..lib.urlEncode(lib.encryptRequest(tabelaDados))
-        params.timeout = 15
-        
-        --print(URL, params.body)
-        local function networkListener( event )
-                    lib.deletaCarregando()
-                    if ( event.isError ) then
-                        
-                        lib.criarPopUp(lib.textos.erroConexao)
-
-                    else
-
-                       print(event.status)
-                       print(lib.decryptRequest(event.response))
-                       --print(event.response)
-
-                       if event.status == 200 then
-                                 decoded = lib.json.decode( lib.decryptRequest(event.response) )
-                                if decoded.valido == true then 
-
-                                    if funcaoRetorno ~= nil then
-                                         funcaoRetorno(decoded)
-                                    end
-
-
-                                else
-                                        
-                                   if validoFalseFunc ~=nil then     
-                                       lib.criarPopUp(decoded.mensagem,validoFalseFunc)
-                                   else
-                                       lib.criarPopUp(decoded.mensagem)
-                                    end
-                                       
-
-                                end
-                        else
-
-                            lib.criarPopUp(lib.mensagemErro)
-                        end             
-
+    
+    local decoded
+    local URL = lib.url..urlServico
+    --local URL = lib.url
+    
+    tabelaDados["idFranqueador"] = lib.idFranqueador
+    
+    local params = {}
+    --params.body  = "token="..lib.urlEncode(lib.encryptRequest({["cpf"]= cpf,["senha"]= senha}))
+    params.body  = "token="..lib.urlEncode(lib.encryptRequest(tabelaDados))
+    params.timeout = 15
+    
+    --print(URL, params.body)
+    local function networkListener( event )
+        lib.deletaCarregando()
+        if ( event.isError ) then
+            
+            lib.criarPopUp(lib.textos.erroConexao)
+            
+        else
+            
+            print(event.status)
+            print(lib.decryptRequest(event.response))
+            --print(event.response)
+            
+            if event.status == 200 then
+                decoded = lib.json.decode( lib.decryptRequest(event.response) )
+                if decoded.valido == true then 
+                    
+                    if funcaoRetorno ~= nil then
+                        funcaoRetorno(decoded)
                     end
-
+                    
+                    
+                else
+                    
+                    if validoFalseFunc ~=nil then     
+                        lib.criarPopUp(decoded.mensagem,validoFalseFunc)
+                    else
+                        lib.criarPopUp(decoded.mensagem)
+                    end
+                    
+                    
+                end
+            else
+                
+                lib.criarPopUp(lib.mensagemErro)
+            end             
+            
         end
-
-        if funcaoRetorno ~= nil then
-            lib.criaCarregando()    
-        end
-        network.request(URL, "POST", networkListener, params )
-
-    end
-function lib.servicosSemResposta(tabelaDados,urlServico)
-
-        local decoded
-        local URL = lib.url..urlServico
-        --local URL = lib.url
         
-        tabelaDados["idFranqueador"] = lib.idFranqueador
-        
-        local params = {}
-        --params.body  = "token="..lib.urlEncode(lib.encryptRequest({["cpf"]= cpf,["senha"]= senha}))
-        params.body  = "token="..lib.urlEncode(lib.encryptRequest(tabelaDados))
-        params.timeout = 15
-        
-        --print(URL, params.body)
-        local function networkListener( event )
-
-        end
-
-        
-        network.request(URL, "POST", networkListener, params )
-
     end
     
+    if funcaoRetorno ~= nil then
+        lib.criaCarregando()    
+    end
+    network.request(URL, "POST", networkListener, params )
+    
+end
+function lib.servicosSemResposta(tabelaDados,urlServico)
+    
+    local decoded
+    local URL = lib.url..urlServico
+    --local URL = lib.url
+    
+    tabelaDados["idFranqueador"] = lib.idFranqueador
+    
+    local params = {}
+    --params.body  = "token="..lib.urlEncode(lib.encryptRequest({["cpf"]= cpf,["senha"]= senha}))
+    params.body  = "token="..lib.urlEncode(lib.encryptRequest(tabelaDados))
+    params.timeout = 15
+    
+    --print(URL, params.body)
+    local function networkListener( event )
+        
+    end
+    
+    
+    network.request(URL, "POST", networkListener, params )
+    
+end
+
 function lib.criarPopUp(msg, func, sucesso)
     
     local grupoPop = display.newGroup() 
@@ -215,23 +215,23 @@ function lib.criarPopUp(msg, func, sucesso)
     local function tocouFundo()
         
         
-    if chamarDelete == true then   
-        chamarDelete = false
-       local function deletaTudo()
-        if grupoPop ~= nil then
-        grupoPop:removeSelf()
-        grupoPop = nil
-        end
-        if func ~= nil then
-            func()
-        end
+        if chamarDelete == true then   
+            chamarDelete = false
+            local function deletaTudo()
+                if grupoPop ~= nil then
+                    grupoPop:removeSelf()
+                    grupoPop = nil
+                end
+                if func ~= nil then
+                    func()
+                end
+                
+            end
+            
+            timer.performWithDelay(100, deletaTudo)
+        end  
         
-       end
-       
-       timer.performWithDelay(100, deletaTudo)
-     end  
-       
-         return true
+        return true
     end
     
     
@@ -243,16 +243,16 @@ function lib.criarPopUp(msg, func, sucesso)
     fundoRect:addEventListener("tap",tocouFundo)
     fundoRect:addEventListener("touch",tocouFundo)
     grupoPop:insert(fundoRect)
-
+    
     local caixaPop
-   if sucess == true then
-       caixaPop = display.newImage("images/alertas/caixaPopUpSucesso.png", lib.centerX, lib.centerY+40)  
-   else
-       caixaPop = display.newImage("images/alertas/caixaPopUp.png", lib.centerX, lib.centerY+40)  
-   end
-      grupoPop:insert(caixaPop)
-
-
+    if sucess == true then
+        caixaPop = display.newImage("images/alertas/caixaPopUpSucesso.png", lib.centerX, lib.centerY+40)  
+    else
+        caixaPop = display.newImage("images/alertas/caixaPopUp.png", lib.centerX, lib.centerY+40)  
+    end
+    grupoPop:insert(caixaPop)
+    
+    
     local options = 
     {
         --parent = textGroup,
@@ -264,12 +264,12 @@ function lib.criarPopUp(msg, func, sucesso)
         fontSize = 32,
         align = "center"  --new alignment parameter
     }
-
+    
     local textoPop = display.newText( options )
     if sucess == true then
-       textoPop:setFillColor(lib.successTextColor[1],lib.successTextColor[2],lib.successTextColor[3]) 
+        textoPop:setFillColor(lib.successTextColor[1],lib.successTextColor[2],lib.successTextColor[3]) 
     else
-       textoPop:setFillColor(lib.errorTextColor[1],lib.errorTextColor[2],lib.errorTextColor[3]) 
+        textoPop:setFillColor(lib.errorTextColor[1],lib.errorTextColor[2],lib.errorTextColor[3]) 
     end
     
     grupoPop:insert(textoPop)    
@@ -278,7 +278,7 @@ end
 
 function lib.dinheiroMask(numero)
     
-   return string.format("%4.2f",numero)
+    return string.format("%4.2f",numero)
     
 end
 
@@ -320,17 +320,17 @@ function lib.mostrarLojas(funcRetorno)
             tabCidades[1].longitudeInicial = usuarioLongitude
             tabCidades[1].lojas = {}
             print(#decoded.franquias)
-             for j=1 , #decoded.franquias do
-               tabCidades[1].lojas[j] = {}
-               tabCidades[1].lojas[j].id = decoded.franquias[j].idFranquia
-               tabCidades[1].lojas[j].nome = decoded.franquias[j].noFranquia
-               tabCidades[1].lojas[j].titulo = decoded.franquias[j].noTituloFranquia
-               tabCidades[1].lojas[j].latitude = decoded.franquias[j].noLatitude
-               tabCidades[1].lojas[j].longitude = decoded.franquias[j].noLongitude
-               tabCidades[1].lojas[j].endereco = decoded.franquias[j].noEnderecoAmigavel or "endereco "..j
-               print(tabCidades[1].lojas[j].nome)
-           end
-           
+            for j=1 , #decoded.franquias do
+                tabCidades[1].lojas[j] = {}
+                tabCidades[1].lojas[j].id = decoded.franquias[j].idFranquia
+                tabCidades[1].lojas[j].nome = decoded.franquias[j].noFranquia
+                tabCidades[1].lojas[j].titulo = decoded.franquias[j].noTituloFranquia
+                tabCidades[1].lojas[j].latitude = decoded.franquias[j].noLatitude
+                tabCidades[1].lojas[j].longitude = decoded.franquias[j].noLongitude
+                tabCidades[1].lojas[j].endereco = decoded.franquias[j].noEnderecoAmigavel or "endereco "..j
+                print(tabCidades[1].lojas[j].nome)
+            end
+            
             lib.cidadeSelecionada  = 1
             lib.tabCidades = tabCidades
             botaoFecharTapped()
@@ -340,23 +340,23 @@ function lib.mostrarLojas(funcRetorno)
         end
         print(usuarioLatitude,usuarioLongitude)
         if usuarioLatitude ~= nil and usuarioLongitude ~= nil then
-         --lib.servicos({["noLatitude"] = usuarioLatitude, ["noLongitude"] = usuarioLongitude },"mobile/franqueador/listar/lojas/distancia",funcaoRetornoLojasProximas)
-       lib.servicos({["noLatitude"] = 15.722038712233, ["noLongitude"] = 47.881459584968 },"mobile/franqueador/listar/lojas/distancia",funcaoRetornoLojasProximas)
-       
+            --lib.servicos({["noLatitude"] = usuarioLatitude, ["noLongitude"] = usuarioLongitude },"mobile/franqueador/listar/lojas/distancia",funcaoRetornoLojasProximas)
+            lib.servicos({["noLatitude"] = 15.722038712233, ["noLongitude"] = 47.881459584968 },"mobile/franqueador/listar/lojas/distancia",funcaoRetornoLojasProximas)
+            
         else
-          lib.criarPopUp(lib.textos.erroGPS)  
+            lib.criarPopUp(lib.textos.erroGPS)  
         end
         
         
     end
     function locationHandler( event )
-       -- Check for error (user may have turned off location services)
-       if ( event.errorCode ) then
-
-       else
-           usuarioLatitude = event.latitude
-           usuarioLongitude = event.longitude
-       end
+        -- Check for error (user may have turned off location services)
+        if ( event.errorCode ) then
+            
+        else
+            usuarioLatitude = event.latitude
+            usuarioLongitude = event.longitude
+        end
     end
     
     
@@ -398,54 +398,54 @@ function lib.mostrarLojas(funcRetorno)
         hideBackground = false,
         hideScrollBar  = true ,
         backgroundColor = {lib.scrollViewBackColor[1],lib.scrollViewBackColor[2],lib.scrollViewBackColor[3] },
-        }   
+    }   
     scrollView = lib.widget.newScrollView(opts)  
     grupoLojas:insert(scrollView)
-
+    
     local barrinhaVermalhaCima = display.newImage("images/cadastro/barrinhaVermelha.png", lib.centerX, lib.topY+297)
     barrinhaVermalhaCima:scale(lib.scale,1)
     grupoLojas:insert(barrinhaVermalhaCima)
-
+    
     local barrinhaVermalhaBaixo = display.newImage("images/cadastro/barrinhaVermelha.png", lib.centerX, lib.bottomY-6)
     barrinhaVermalhaBaixo:scale(lib.scale,1)
     grupoLojas:insert(barrinhaVermalhaBaixo)
     
     local function funcaoRetornoServico(decoded)
         
-      for i = 1 , #decoded.franquias do
-      tabCidades[i] = {}
-      tabCidades[i].id = decoded.franquias[i].idMunicipio
-      tabCidades[i].nome = decoded.franquias[i].noMunicipio
-      tabCidades[i].titulo = decoded.franquias[i].noTituloMunicipio
-      print(tabCidades[i].titulo)
-      tabCidades[i].lojas = {}
-           for j=1 , #decoded.franquias[i].arrFranquias do
-               tabCidades[i].lojas[j] = {}
-               tabCidades[i].lojas[j].id = decoded.franquias[i].arrFranquias[j].idFranquia
-               tabCidades[i].lojas[j].nome = decoded.franquias[i].arrFranquias[j].noFranquia
-               tabCidades[i].lojas[j].titulo = decoded.franquias[i].arrFranquias[j].noTituloFranquia
-               tabCidades[i].lojas[j].latitude = decoded.franquias[i].arrFranquias[j].noLatitude
-               tabCidades[i].lojas[j].longitude = decoded.franquias[i].arrFranquias[j].noLongitude
-               tabCidades[i].lojas[j].endereco = decoded.franquias[i].arrFranquias[j].noEnderecoAmigavel or "endereco "..i..j
-               
-           end
-      tabCidades[i].latitudeInicial = tabCidades[i].lojas[1].latitude
-      tabCidades[i].longitudeInicial = tabCidades[i].lojas[1].longitude
-      
-      buttons[i] = {}
-      
-      buttons[i].button = display.newImage("images/alertas/botaoListarLojas.png", lib.centerX-lib.leftX, 120*i-50)
-      buttons[i].button.num = i
-      buttons[i].button:addEventListener("tap",lojaSelecionada)
-      scrollView:insert(buttons[i].button)
-      
-      buttons[i].text = lib.maxWidth(display.newText( tabCidades[i].nome, lib.centerX-lib.leftX, 120*i-50, lib.textFont, 48),350, 60)
-      scrollView:insert(buttons[i].text)
-      
-      print(tabCidades[i].nome)
-      
-      end
-          
+        for i = 1 , #decoded.franquias do
+            tabCidades[i] = {}
+            tabCidades[i].id = decoded.franquias[i].idMunicipio
+            tabCidades[i].nome = decoded.franquias[i].noMunicipio
+            tabCidades[i].titulo = decoded.franquias[i].noTituloMunicipio
+            print(tabCidades[i].titulo)
+            tabCidades[i].lojas = {}
+            for j=1 , #decoded.franquias[i].arrFranquias do
+                tabCidades[i].lojas[j] = {}
+                tabCidades[i].lojas[j].id = decoded.franquias[i].arrFranquias[j].idFranquia
+                tabCidades[i].lojas[j].nome = decoded.franquias[i].arrFranquias[j].noFranquia
+                tabCidades[i].lojas[j].titulo = decoded.franquias[i].arrFranquias[j].noTituloFranquia
+                tabCidades[i].lojas[j].latitude = decoded.franquias[i].arrFranquias[j].noLatitude
+                tabCidades[i].lojas[j].longitude = decoded.franquias[i].arrFranquias[j].noLongitude
+                tabCidades[i].lojas[j].endereco = decoded.franquias[i].arrFranquias[j].noEnderecoAmigavel or "endereco "..i..j
+                
+            end
+            tabCidades[i].latitudeInicial = tabCidades[i].lojas[1].latitude
+            tabCidades[i].longitudeInicial = tabCidades[i].lojas[1].longitude
+            
+            buttons[i] = {}
+            
+            buttons[i].button = display.newImage("images/alertas/botaoListarLojas.png", lib.centerX-lib.leftX, 120*i-50)
+            buttons[i].button.num = i
+            buttons[i].button:addEventListener("tap",lojaSelecionada)
+            scrollView:insert(buttons[i].button)
+            
+            buttons[i].text = lib.maxWidth(display.newText( tabCidades[i].nome, lib.centerX-lib.leftX, 120*i-50, lib.textFont, 48),350, 60)
+            scrollView:insert(buttons[i].text)
+            
+            print(tabCidades[i].nome)
+            
+        end
+        
         
         
     end
@@ -463,7 +463,7 @@ function lib.criarMapa(markerTouched)
     local tocouFundo   , botaoTapped , xTapped , markerTapped , markerTapped
     
     local myMap
-            
+    
     function tocouFundo()
         return true
     end
@@ -474,7 +474,7 @@ function lib.criarMapa(markerTouched)
         
         myMap:removeSelf()
         myMap = nil
-           
+        
     end
     
     local qtTapped = {}
@@ -487,8 +487,8 @@ function lib.criarMapa(markerTouched)
         end
         
         qtTapped[event.markerId] = qtTapped[event.markerId] + 1
-            
-            
+        
+        
         if qtTapped[event.markerId]>1 then
             botaoFecharTapped()
             markerTouched(event.markerId)
@@ -515,7 +515,7 @@ function lib.criarMapa(markerTouched)
     local barrinhaVermalhaCima = display.newImage("images/cadastro/barrinhaVermelha.png", lib.centerX, lib.topY+117)
     barrinhaVermalhaCima:scale(lib.scale,1)
     grupoMapa:insert(barrinhaVermalhaCima)
-
+    
     local barrinhaVermalhaBaixo = display.newImage("images/cadastro/barrinhaVermelha.png", lib.centerX, lib.bottomY-6)
     barrinhaVermalhaBaixo:scale(lib.scale,1)
     grupoMapa:insert(barrinhaVermalhaBaixo)
@@ -528,19 +528,30 @@ function lib.criarMapa(markerTouched)
     myMap = native.newMapView( lib.centerX, lib.centerY+55, lib.distanceX, lib.distanceY-135 )
     
     local function createMarkers()
-         for i = 1 , #lib.tabCidades[lib.cidadeSelecionada].lojas do
-                myMap:addMarker(lib.tabCidades[lib.cidadeSelecionada].lojas[i].latitude,lib.tabCidades[lib.cidadeSelecionada].lojas[i].longitude , {imageFile = "images/lojas/marcadorMapa.png", title = lib.tabCidades[lib.cidadeSelecionada].lojas[i].nome,subtitle = lib.tabCidades[lib.cidadeSelecionada].lojas[i].endereco,listener = markerTapped })
-                qtTapped[i] = 0
-            end
-
-            myMap:setRegion (lib.tabCidades[lib.cidadeSelecionada].latitudeInicial , lib.tabCidades[lib.cidadeSelecionada].longitudeInicial ,1 ,1)
-
+        for i = 1 , #lib.tabCidades[lib.cidadeSelecionada].lojas do
+            local options = 
+            {
+                imageFile = "images/lojas/marcadorMapa.png", 
+                title = lib.tabCidades[lib.cidadeSelecionada].lojas[i].nome,
+                subtitle = lib.tabCidades[lib.cidadeSelecionada].lojas[i].endereco,
+                listener = markerTapped 
+            }
+            myMap:addMarker( 37.331692, -122.030456, options )
+            --            myMap:addMarker(lib.tabCidades[lib.cidadeSelecionada].lojas[i].latitude,lib.tabCidades[lib.cidadeSelecionada].lojas[i].longitude , {
+            --                imageFile = "images/lojas/marcadorMapa.png", 
+            --                title = lib.tabCidades[lib.cidadeSelecionada].lojas[i].nome,
+            --                subtitle = lib.tabCidades[lib.cidadeSelecionada].lojas[i].endereco,
+            --                listener = markerTapped 
+            --            })
+            qtTapped[i] = 0
+        end
+        
+        --        myMap:setRegion (lib.tabCidades[lib.cidadeSelecionada].latitudeInicial , lib.tabCidades[lib.cidadeSelecionada].longitudeInicial ,1 ,1)
+        
     end
     local function delayMap()
-        
         if myMap ~=nil then
-        
-           createMarkers()
+            createMarkers()
         end
     end
     
@@ -596,14 +607,14 @@ function lib.detalhesFaq(pergunta,resposta)
         hideBackground = false,
         hideScrollBar  = true ,
         backgroundColor = {lib.scrollViewBackColor[1],lib.scrollViewBackColor[2],lib.scrollViewBackColor[3] },
-        }   
+    }   
     scrollView = lib.widget.newScrollView(opts)  
     grupoFaq:insert(scrollView)
-
+    
     local barrinhaVermalhaCima = display.newImage("images/cadastro/barrinhaVermelha.png", lib.centerX, lib.topY+126)
     barrinhaVermalhaCima:scale(lib.scale,1)
     grupoFaq:insert(barrinhaVermalhaCima)
-
+    
     local barrinhaVermalhaBaixo = display.newImage("images/cadastro/barrinhaVermelha.png", lib.centerX, lib.bottomY-6)
     barrinhaVermalhaBaixo:scale(lib.scale,1)
     grupoFaq:insert(barrinhaVermalhaBaixo)
@@ -614,17 +625,17 @@ function lib.detalhesFaq(pergunta,resposta)
     local posY
     
     
-     local optTextPergunta= 
+    local optTextPergunta= 
     {
-            --parent = textGroup,
-            text = pergunta,     
-            x = lib.centerX-lib.leftX,
-            y = 25,
-            width = lib.distanceX-60,     --required for multi-line and alignment
-            font = lib.textFont,   
-            fontSize = 36,
-            align = "center"  --new alignment parameter
-        }
+        --parent = textGroup,
+        text = pergunta,     
+        x = lib.centerX-lib.leftX,
+        y = 25,
+        width = lib.distanceX-60,     --required for multi-line and alignment
+        font = lib.textFont,   
+        fontSize = 36,
+        align = "center"  --new alignment parameter
+    }
     
     
     local textoPergunta = display.newText(optTextPergunta)
@@ -646,18 +657,18 @@ function lib.detalhesFaq(pergunta,resposta)
     
     local optTextResposta= 
     {
-            --parent = textGroup,
-            text = resposta,     
-            x = lib.centerX-lib.leftX,
-            y = posY +30,
-            width = lib.distanceX-60,     --required for multi-line and alignment
-            font = lib.textFont,   
-            fontSize = 36,
-            align = "center"  --new alignment parameter
-        }
-        
-        
-        
+        --parent = textGroup,
+        text = resposta,     
+        x = lib.centerX-lib.leftX,
+        y = posY +30,
+        width = lib.distanceX-60,     --required for multi-line and alignment
+        font = lib.textFont,   
+        fontSize = 36,
+        align = "center"  --new alignment parameter
+    }
+    
+    
+    
     local textoResposta = display.newText(optTextResposta)
     textoResposta.anchorY = 0
     textoResposta:setFillColor(lib.textConteudoColor[1],lib.textConteudoColor[2],lib.textConteudoColor[3])
@@ -686,7 +697,7 @@ function lib.mostrarCidadesOpiniao(funcRetorno,textBoxVoltaNaTela)
             grupoLojas:removeSelf()
             grupoLojas = nil
             if sim ~= 1 then
-            textBoxVoltaNaTela()
+                textBoxVoltaNaTela()
             end
         end
     end
@@ -716,7 +727,7 @@ function lib.mostrarCidadesOpiniao(funcRetorno,textBoxVoltaNaTela)
     botaoFechar:addEventListener("tap",botaoFecharTapped)
     grupoLojas:insert(botaoFechar)
     
-
+    
     local opts = {
         top = lib.topY+123,
         left = lib.leftX,
@@ -728,49 +739,49 @@ function lib.mostrarCidadesOpiniao(funcRetorno,textBoxVoltaNaTela)
         hideBackground = false,
         hideScrollBar  = true ,
         backgroundColor = {lib.scrollViewBackColor[1],lib.scrollViewBackColor[2],lib.scrollViewBackColor[3] },
-        }   
+    }   
     scrollView = lib.widget.newScrollView(opts)  
     grupoLojas:insert(scrollView)
-
+    
     local barrinhaVermalhaCima = display.newImage("images/cadastro/barrinhaVermelha.png", lib.centerX, lib.topY+117)
     barrinhaVermalhaCima:scale(lib.scale,1)
     grupoLojas:insert(barrinhaVermalhaCima)
-
+    
     local barrinhaVermalhaBaixo = display.newImage("images/cadastro/barrinhaVermelha.png", lib.centerX, lib.bottomY-6)
     barrinhaVermalhaBaixo:scale(lib.scale,1)
     grupoLojas:insert(barrinhaVermalhaBaixo)
     
     local function funcaoRetornoServico(decoded)
         
-      for i = 1 , #decoded.franquias do
-      tabCidades[i] = {}
-      tabCidades[i].id = decoded.franquias[i].idMunicipio
-      tabCidades[i].nome = decoded.franquias[i].noMunicipio
-      tabCidades[i].lojas = {}
-           for j=1 , #decoded.franquias[i].arrFranquias do
-               tabCidades[i].lojas[j] = {}
-               tabCidades[i].lojas[j].id = decoded.franquias[i].arrFranquias[j].idFranquia
-               tabCidades[i].lojas[j].nome = decoded.franquias[i].arrFranquias[j].noFranquia
-               tabCidades[i].lojas[j].latitude = decoded.franquias[i].arrFranquias[j].noLatitude
-               tabCidades[i].lojas[j].longitude = decoded.franquias[i].arrFranquias[j].noLongitude
-               tabCidades[i].lojas[j].endereco = decoded.franquias[i].arrFranquias[j].noEnderecoAmigavel or "endereco "..i..j
-           end
-      
-      
-      buttons[i] = {}
-      
-      buttons[i].button = display.newImage("images/alertas/botaoListarLojas.png", lib.centerX-lib.leftX, 120*i-50)
-      buttons[i].button.num = i
-      buttons[i].button:addEventListener("tap",lojaSelecionada)
-      scrollView:insert(buttons[i].button)
-      
-      buttons[i].text = lib.maxWidth(display.newText( tabCidades[i].nome, lib.centerX-lib.leftX, 120*i-50, lib.textFont, 48),350, 60)
-      scrollView:insert(buttons[i].text)
-      
-      print(tabCidades[i].nome)
-      
-      end
-          
+        for i = 1 , #decoded.franquias do
+            tabCidades[i] = {}
+            tabCidades[i].id = decoded.franquias[i].idMunicipio
+            tabCidades[i].nome = decoded.franquias[i].noMunicipio
+            tabCidades[i].lojas = {}
+            for j=1 , #decoded.franquias[i].arrFranquias do
+                tabCidades[i].lojas[j] = {}
+                tabCidades[i].lojas[j].id = decoded.franquias[i].arrFranquias[j].idFranquia
+                tabCidades[i].lojas[j].nome = decoded.franquias[i].arrFranquias[j].noFranquia
+                tabCidades[i].lojas[j].latitude = decoded.franquias[i].arrFranquias[j].noLatitude
+                tabCidades[i].lojas[j].longitude = decoded.franquias[i].arrFranquias[j].noLongitude
+                tabCidades[i].lojas[j].endereco = decoded.franquias[i].arrFranquias[j].noEnderecoAmigavel or "endereco "..i..j
+            end
+            
+            
+            buttons[i] = {}
+            
+            buttons[i].button = display.newImage("images/alertas/botaoListarLojas.png", lib.centerX-lib.leftX, 120*i-50)
+            buttons[i].button.num = i
+            buttons[i].button:addEventListener("tap",lojaSelecionada)
+            scrollView:insert(buttons[i].button)
+            
+            buttons[i].text = lib.maxWidth(display.newText( tabCidades[i].nome, lib.centerX-lib.leftX, 120*i-50, lib.textFont, 48),350, 60)
+            scrollView:insert(buttons[i].text)
+            
+            print(tabCidades[i].nome)
+            
+        end
+        
         
         
     end
@@ -830,7 +841,7 @@ function lib.mostrarLojasOpiniao(funcRetorno,textBoxVoltaNaTela,tabLojas)
     botaoFechar:addEventListener("tap",botaoFecharTapped)
     grupoLojas:insert(botaoFechar)
     
-
+    
     local opts = {
         top = lib.topY+123,
         left = lib.leftX,
@@ -842,14 +853,14 @@ function lib.mostrarLojasOpiniao(funcRetorno,textBoxVoltaNaTela,tabLojas)
         hideBackground = false,
         hideScrollBar  = true ,
         backgroundColor = {lib.scrollViewBackColor[1],lib.scrollViewBackColor[2],lib.scrollViewBackColor[3] },
-        }   
+    }   
     scrollView = lib.widget.newScrollView(opts)  
     grupoLojas:insert(scrollView)
-
+    
     local barrinhaVermalhaCima = display.newImage("images/cadastro/barrinhaVermelha.png", lib.centerX, lib.topY+117)
     barrinhaVermalhaCima:scale(lib.scale,1)
     grupoLojas:insert(barrinhaVermalhaCima)
-
+    
     local barrinhaVermalhaBaixo = display.newImage("images/cadastro/barrinhaVermelha.png", lib.centerX, lib.bottomY-6)
     barrinhaVermalhaBaixo:scale(lib.scale,1)
     grupoLojas:insert(barrinhaVermalhaBaixo)
@@ -857,15 +868,15 @@ function lib.mostrarLojasOpiniao(funcRetorno,textBoxVoltaNaTela,tabLojas)
     
     for i = 1 , #tabLojas do
         
-      buttons[i] = {}
-      
-      buttons[i].button = display.newImage("images/alertas/botaoListarLojas.png", lib.centerX-lib.leftX, 120*i-50)
-      buttons[i].button.num = i
-      buttons[i].button:addEventListener("tap",lojaSelecionada)
-      scrollView:insert(buttons[i].button)
-      
-      buttons[i].text = lib.maxWidth(display.newText( tabLojas[i].nome, lib.centerX-lib.leftX, 120*i-50, lib.textFont, 48),350, 60)
-      scrollView:insert(buttons[i].text)   
+        buttons[i] = {}
+        
+        buttons[i].button = display.newImage("images/alertas/botaoListarLojas.png", lib.centerX-lib.leftX, 120*i-50)
+        buttons[i].button.num = i
+        buttons[i].button:addEventListener("tap",lojaSelecionada)
+        scrollView:insert(buttons[i].button)
+        
+        buttons[i].text = lib.maxWidth(display.newText( tabLojas[i].nome, lib.centerX-lib.leftX, 120*i-50, lib.textFont, 48),350, 60)
+        scrollView:insert(buttons[i].text)   
         
         
     end
@@ -881,20 +892,20 @@ function lib.confirmaSimNao(msg,func)
     local tocouFundo,deleta ,botaoTapped
     
     function tocouFundo()
-         return true
+        return true
     end
     function deleta()
-       if chamarDelete == true then   
-        chamarDelete = false
-       local function deletaTudo()
-        if grupoPop ~= nil then
-        grupoPop:removeSelf()
-        grupoPop = nil
-        end
-       end
-       
-       timer.performWithDelay(100, deletaTudo)
-     end  
+        if chamarDelete == true then   
+            chamarDelete = false
+            local function deletaTudo()
+                if grupoPop ~= nil then
+                    grupoPop:removeSelf()
+                    grupoPop = nil
+                end
+            end
+            
+            timer.performWithDelay(100, deletaTudo)
+        end  
     end
     function botaoTapped(event)
         deleta()
@@ -932,7 +943,7 @@ function lib.confirmaSimNao(msg,func)
         fontSize = 32,
         align = "center"  --new alignment parameter
     }
-
+    
     local textoPop = display.newText( options )
     textoPop:setFillColor(lib.errorTextColor[1],lib.errorTextColor[2],lib.errorTextColor[3])
     grupoPop:insert(textoPop) 
@@ -953,129 +964,129 @@ end
 function lib.mostraSexo(sexo)
     
     local stg
-           if  sexo == "M" then
-                stg = "Masculino"
-            elseif sexo == "F" then
-                stg = "Feminino"
-            else
-               stg = "Unisex"
-            end
-            
-            return stg
+    if  sexo == "M" then
+        stg = "Masculino"
+    elseif sexo == "F" then
+        stg = "Feminino"
+    else
+        stg = "Unisex"
+    end
+    
+    return stg
     
 end
 
 function lib.esqueciMinhaSenha()
     
-            local grupoUsarSaldo = display.newGroup() 
+    local grupoUsarSaldo = display.newGroup() 
+    
+    local textoSaldo ,  textField
+    
+    local tocouFundo , focusTextField , textos , botaoOkTapped , xTapped
+    
+    function tocouFundo()
+        return true
+    end
+    function focusTextField()  
+        native.setKeyboardFocus(textField)
+    end
+    function textos(textEvent)
+        
+        if ( textEvent.phase == "began" ) then
             
-            local textoSaldo ,  textField
             
-            local tocouFundo , focusTextField , textos , botaoOkTapped , xTapped
+            textField.text = textoSaldo.text 
             
-            function tocouFundo()
-                return true
-            end
-            function focusTextField()  
-                native.setKeyboardFocus(textField)
-            end
-            function textos(textEvent)
-
-                if ( textEvent.phase == "began" ) then
-
-
-                textField.text = textoSaldo.text 
-
-                elseif (  textEvent.phase == "submitted" ) then
-
-                botaoOkTapped()
+        elseif (  textEvent.phase == "submitted" ) then
+            
+            botaoOkTapped()
+            
+        elseif ( textEvent.phase == "editing" ) then
+            
+            
+            if string.len(textField.text) <= 50 then
                 
-                elseif ( textEvent.phase == "editing" ) then
-
-
-                        if string.len(textField.text) <= 50 then
-                                
-                          
-                             
-                            
-                            textoSaldo.text = textField.text
-                            lib.maxWidth(textoSaldo,460, 72)
-
-
-                        else
-
-                            textField.text =  string.sub(textField.text,1,50)  
-
-
-                        end
-
-                end
-
-            end 
-            function xTapped()
-           
-                textField:removeSelf()
-                textField = nil
-
-                native.setKeyboardFocus(nil)
-
-                grupoUsarSaldo:removeSelf()
-                grupoUsarSaldo = nil
-           
-            end
-            function botaoOkTapped ()
-                         
-                      
-                local function funcaoRetorno(decoded)
-                     lib.criarPopUp(decoded.mensagem)
-                end
-
-                print(textoSaldo.text)
-                if textoSaldo.text == "" then 
-                   -- lib.criarPopUp("Digite seu email")
-                else
-                    xTapped()     
-                    lib.servicos({["noEmail"] = textoSaldo.text },"mobile/usuario/recuperar-senha",funcaoRetorno)
-                end
-           
+                
+                
+                
+                textoSaldo.text = textField.text
+                lib.maxWidth(textoSaldo,460, 72)
+                
+                
+            else
+                
+                textField.text =  string.sub(textField.text,1,50)  
+                
+                
             end
             
-            local fundoRect = display.newRect( lib.leftX,lib.topY,lib.distanceX,lib.distanceY) 
-            fundoRect:setFillColor(0,0,0)
-            fundoRect.alpha = 0.7
-            fundoRect.anchorX  = 0
-            fundoRect.anchorY = 0
-            fundoRect:addEventListener("tap",tocouFundo)
-            fundoRect:addEventListener("touch",tocouFundo)
-            grupoUsarSaldo:insert(fundoRect)   
-            
-            local caixaPop = display.newImage("images/alertas/popUpEsqueciMinhaSenha.png", lib.centerX, lib.centerY-190)  
-            grupoUsarSaldo:insert(caixaPop)
-            
-            local botaoOk = display.newImage("images/alertas/botaoEnviar.png", lib.centerX, lib.centerY+20) 
-            botaoOk:addEventListener("tap", botaoOkTapped)
-            grupoUsarSaldo:insert(botaoOk) 
-            
-            local xButton = display.newCircle( 0, 0, 90)
-            xButton.x = lib.centerX +210
-            xButton.y = lib.centerY-360
-            xButton.alpha = 0.01
-            xButton:addEventListener("tap",xTapped )
-            grupoUsarSaldo:insert(xButton) 
-            
-            
-            textoSaldo = display.newText( "" , lib.centerX , lib.centerY-120, lib.textFont, 48)
-            textoSaldo:setFillColor(lib.textConteudoColor[1],lib.textConteudoColor[2],lib.textConteudoColor[3])
-            grupoUsarSaldo:insert(textoSaldo) 
-
-            textField = native.newTextField( 0,-1000, 447, 50 )
-            textField.x = -1000
-            textField.y = -1000
-            textField.inputType = "email"
-            textField:addEventListener( "userInput", textos )
-
-
-            transition.to(textField,{time = 300, onComplete = focusTextField })
+        end
+        
+    end 
+    function xTapped()
+        
+        textField:removeSelf()
+        textField = nil
+        
+        native.setKeyboardFocus(nil)
+        
+        grupoUsarSaldo:removeSelf()
+        grupoUsarSaldo = nil
+        
+    end
+    function botaoOkTapped ()
+        
+        
+        local function funcaoRetorno(decoded)
+            lib.criarPopUp(decoded.mensagem)
+        end
+        
+        print(textoSaldo.text)
+        if textoSaldo.text == "" then 
+            -- lib.criarPopUp("Digite seu email")
+        else
+            xTapped()     
+            lib.servicos({["noEmail"] = textoSaldo.text },"mobile/usuario/recuperar-senha",funcaoRetorno)
+        end
+        
+    end
+    
+    local fundoRect = display.newRect( lib.leftX,lib.topY,lib.distanceX,lib.distanceY) 
+    fundoRect:setFillColor(0,0,0)
+    fundoRect.alpha = 0.7
+    fundoRect.anchorX  = 0
+    fundoRect.anchorY = 0
+    fundoRect:addEventListener("tap",tocouFundo)
+    fundoRect:addEventListener("touch",tocouFundo)
+    grupoUsarSaldo:insert(fundoRect)   
+    
+    local caixaPop = display.newImage("images/alertas/popUpEsqueciMinhaSenha.png", lib.centerX, lib.centerY-190)  
+    grupoUsarSaldo:insert(caixaPop)
+    
+    local botaoOk = display.newImage("images/alertas/botaoEnviar.png", lib.centerX, lib.centerY+20) 
+    botaoOk:addEventListener("tap", botaoOkTapped)
+    grupoUsarSaldo:insert(botaoOk) 
+    
+    local xButton = display.newCircle( 0, 0, 90)
+    xButton.x = lib.centerX +210
+    xButton.y = lib.centerY-360
+    xButton.alpha = 0.01
+    xButton:addEventListener("tap",xTapped )
+    grupoUsarSaldo:insert(xButton) 
+    
+    
+    textoSaldo = display.newText( "" , lib.centerX , lib.centerY-120, lib.textFont, 48)
+    textoSaldo:setFillColor(lib.textConteudoColor[1],lib.textConteudoColor[2],lib.textConteudoColor[3])
+    grupoUsarSaldo:insert(textoSaldo) 
+    
+    textField = native.newTextField( 0,-1000, 447, 50 )
+    textField.x = -1000
+    textField.y = -1000
+    textField.inputType = "email"
+    textField:addEventListener( "userInput", textos )
+    
+    
+    transition.to(textField,{time = 300, onComplete = focusTextField })
     
     
 end
@@ -1083,9 +1094,9 @@ end
 function lib.enquete(idEnquete,perguntaText,resp1Text,resp2Text,resp3Text,id1,id2,id3)
     
     local grupoEnquete = display.newGroup() 
-     
+    
     local tocouFundo   , botaoTapped , xTapped
-            
+    
     function tocouFundo()
         return true
     end
@@ -1093,20 +1104,20 @@ function lib.enquete(idEnquete,perguntaText,resp1Text,resp2Text,resp3Text,id1,id
         
         grupoEnquete:removeSelf()
         grupoEnquete = nil
-           
+        
     end
     function botaoOkTapped (event)
-           
-            local function funcaoRetornoResposta(decoded)
-                
-             xTapped()
-                
-            end
-           
-             
-             
-            lib.servicos({["idUsuario"] = lib.dadosUsuario.id ,["idResposta"] = event.target.id , ["idEnquete"] = idEnquete  },"mobile/enquete/responder",funcaoRetornoResposta)
-                 
+        
+        local function funcaoRetornoResposta(decoded)
+            
+            xTapped()
+            
+        end
+        
+        
+        
+        lib.servicos({["idUsuario"] = lib.dadosUsuario.id ,["idResposta"] = event.target.id , ["idEnquete"] = idEnquete  },"mobile/enquete/responder",funcaoRetornoResposta)
+        
     end
     
     local backGround = display.newImage("images/login/background.png", lib.centerX, lib.centerY)
@@ -1127,20 +1138,20 @@ function lib.enquete(idEnquete,perguntaText,resp1Text,resp2Text,resp3Text,id1,id
     botaoFechar.id = 0
     grupoEnquete:insert(botaoFechar)
     botaoFechar:addEventListener("tap",botaoOkTapped)
-   
+    
     local retanguloBack = display.newRect(0,0,lib.distanceX,610)
     retanguloBack.x = lib.centerX
     retanguloBack.y = lib.centerY+130
     grupoEnquete:insert(retanguloBack)
-
+    
     local barrinhaVermalhaCima = display.newImage("images/cadastro/barrinhaVermelha.png", lib.centerX, lib.centerY-180)
     barrinhaVermalhaCima:scale(lib.scale,1)
     grupoEnquete:insert(barrinhaVermalhaCima)
-
+    
     local barrinhaVermalhaBaixo = display.newImage("images/cadastro/barrinhaVermelha.png", lib.centerX, lib.centerY+430)
     barrinhaVermalhaBaixo:scale(lib.scale,1)
     grupoEnquete:insert(barrinhaVermalhaBaixo)
-
+    
     
     local optsPergunta = 
     {
@@ -1180,252 +1191,252 @@ function lib.enquete(idEnquete,perguntaText,resp1Text,resp2Text,resp3Text,id1,id
     
     if resp3Text ~= nil and resp3Text ~= "" then
         
-            local botaoResp3 = display.newImage("images/alertas/botao.png", lib.centerX, lib.centerY+310)
-            botaoResp3.id = id3
-            botaoResp3:addEventListener("tap",botaoOkTapped)
-            grupoEnquete:insert(botaoResp3)
-
-            local textResp3 = display.newText(grupoEnquete, resp3Text, lib.centerX, botaoResp3.y,  lib.textFont, 48)
-            textResp3:setFillColor(lib.textEnqueteColor[1],lib.textEnqueteColor[2],lib.textEnqueteColor[3])
-            textResp3 = lib.maxWidth(textResp3,550, 72)
-    
+        local botaoResp3 = display.newImage("images/alertas/botao.png", lib.centerX, lib.centerY+310)
+        botaoResp3.id = id3
+        botaoResp3:addEventListener("tap",botaoOkTapped)
+        grupoEnquete:insert(botaoResp3)
+        
+        local textResp3 = display.newText(grupoEnquete, resp3Text, lib.centerX, botaoResp3.y,  lib.textFont, 48)
+        textResp3:setFillColor(lib.textEnqueteColor[1],lib.textEnqueteColor[2],lib.textEnqueteColor[3])
+        textResp3 = lib.maxWidth(textResp3,550, 72)
+        
     else
         
-            botaoResp1.y = lib.centerY+20
-            textResp1.y = botaoResp1.y  
-
-            botaoResp2.y =   lib.centerY+220
-            textResp2.y = botaoResp2.y
-      
+        botaoResp1.y = lib.centerY+20
+        textResp1.y = botaoResp1.y  
+        
+        botaoResp2.y =   lib.centerY+220
+        textResp2.y = botaoResp2.y
+        
     end
-       
+    
     
 end
 
 function lib.feedBack(tabLoja,tabItem1,tabItem2,tabItem3,idRequisicao,feedBackPergunta)
     
-        local textBox, createTextBox, deleteTextBox
-        local textboxText = ""
-        local feedBackGroup = display.newGroup()
-
-        function deleteTextBox()
-            textBox:removeSelf()
-            textBox = nil
-        end
-        function createTextBox()
-
-            local function textBoxListener(textEvent)
-
-                    if ( textEvent.phase == "began" ) then
-
-
-                    elseif ( textEvent.phase == "ended" or textEvent.phase == "submitted" ) then
-
-
-                    elseif ( textEvent.phase == "editing" ) then
-
-
-
-                    end
-
+    local textBox, createTextBox, deleteTextBox
+    local textboxText = ""
+    local feedBackGroup = display.newGroup()
+    
+    function deleteTextBox()
+        textBox:removeSelf()
+        textBox = nil
+    end
+    function createTextBox()
+        
+        local function textBoxListener(textEvent)
+            
+            if ( textEvent.phase == "began" ) then
+                
+                
+            elseif ( textEvent.phase == "ended" or textEvent.phase == "submitted" ) then
+                
+                
+            elseif ( textEvent.phase == "editing" ) then
+                
+                
+                
             end
-
-            textBox = native.newTextBox(lib.centerX, lib.centerY-80, 603, 162)
-            textBox.text = textboxText
-            textBox.isEditable = true
-            textBox.isFontSizeScaled = true  
-            textBox.size = 40
-            textBox.hasBackground = false
-            textBox.placeholder = lib.textos.digiteOpiniao
-            textBox:addEventListener( "userInput", textBoxListener )
-
-        end    
-
-        local item1Text,item2Text,item3Text
-        local item1,item2,item3  = 0,0,0
-        local estrelasItem1,estrelasItem2,estrelasItem3 = {},{},{}
-        local estrelasItem1Amarela,estrelasItem2Amarela,estrelasItem3Amarela = {},{},{}
-        
-        
-        local function textBoxSaiDaTela()
-            textBox.x = -1000
-            textBox.y = -1000
-        end
-        local function textBoxVoltaNaTela()
-            textBox.x = lib.centerX
-            textBox.y = lib.centerY-80
+            
         end
         
-        local function deletaGrupos()
-            deleteTextBox()
-            feedBackGroup:removeSelf()
-            feedBackGroup = nil
+        textBox = native.newTextBox(lib.centerX, lib.centerY-80, 603, 162)
+        textBox.text = textboxText
+        textBox.isEditable = true
+        textBox.isFontSizeScaled = true  
+        textBox.size = 40
+        textBox.hasBackground = false
+        textBox.placeholder = lib.textos.digiteOpiniao
+        textBox:addEventListener( "userInput", textBoxListener )
+        
+    end    
+    
+    local item1Text,item2Text,item3Text
+    local item1,item2,item3  = 0,0,0
+    local estrelasItem1,estrelasItem2,estrelasItem3 = {},{},{}
+    local estrelasItem1Amarela,estrelasItem2Amarela,estrelasItem3Amarela = {},{},{}
+    
+    
+    local function textBoxSaiDaTela()
+        textBox.x = -1000
+        textBox.y = -1000
+    end
+    local function textBoxVoltaNaTela()
+        textBox.x = lib.centerX
+        textBox.y = lib.centerY-80
+    end
+    
+    local function deletaGrupos()
+        deleteTextBox()
+        feedBackGroup:removeSelf()
+        feedBackGroup = nil
+    end
+    local function botaoSairTapped()
+        deletaGrupos()
+        
+        local tabResposta = {
+            {idResposta = tabItem1.id,nuResposta = "" },
+            {idResposta = tabItem2.id,nuResposta = "" },
+            {idResposta = tabItem3.id,nuResposta = "" },
+        }
+        
+        lib.servicos({["tipo"]= 1,["idRequisicao"] = idRequisicao ,["idUsuario"] = lib.dadosUsuario.id ,["idFranquia"]=tabLoja.id, ["dsResposta"] = "",["arrResposta"] = tabResposta },"mobile/feedback/responder")
+        
+        
+        
+    end
+    local function mudaItem1(event)
+        item1 = event.target.item
+        for i = 1,4 do
+            estrelasItem1Amarela[i].alpha = 0
         end
-        local function botaoSairTapped()
-            deletaGrupos()
-            
-             local tabResposta = {
-                {idResposta = tabItem1.id,nuResposta = "" },
-                {idResposta = tabItem2.id,nuResposta = "" },
-                {idResposta = tabItem3.id,nuResposta = "" },
-                }
-                
-                lib.servicos({["tipo"]= 1,["idRequisicao"] = idRequisicao ,["idUsuario"] = lib.dadosUsuario.id ,["idFranquia"]=tabLoja.id, ["dsResposta"] = "",["arrResposta"] = tabResposta },"mobile/feedback/responder")
-               
-            
-            
+        for i = 1,event.target.item do
+            estrelasItem1Amarela[i].alpha = 1
         end
-        local function mudaItem1(event)
-            item1 = event.target.item
-            for i = 1,4 do
-                estrelasItem1Amarela[i].alpha = 0
-            end
-            for i = 1,event.target.item do
-                estrelasItem1Amarela[i].alpha = 1
-            end
+    end
+    local function mudaItem2(event)
+        item2 = event.target.item
+        for i = 1,4 do
+            estrelasItem2Amarela[i].alpha = 0
         end
-        local function mudaItem2(event)
-            item2 = event.target.item
-            for i = 1,4 do
-                estrelasItem2Amarela[i].alpha = 0
-            end
-            for i = 1,event.target.item do
-                estrelasItem2Amarela[i].alpha = 1
-            end
+        for i = 1,event.target.item do
+            estrelasItem2Amarela[i].alpha = 1
         end
-        local function mudaItem3(event)
-            item3 = event.target.item
-            for i = 1,4 do
-                estrelasItem3Amarela[i].alpha = 0
-            end
-            for i = 1,event.target.item do
-                estrelasItem3Amarela[i].alpha = 1
-            end
+    end
+    local function mudaItem3(event)
+        item3 = event.target.item
+        for i = 1,4 do
+            estrelasItem3Amarela[i].alpha = 0
         end
-        local function botaoConcluidoTapped()
+        for i = 1,event.target.item do
+            estrelasItem3Amarela[i].alpha = 1
+        end
+    end
+    local function botaoConcluidoTapped()
+        
+        local function funcaoRetornoOpiniao(decoded)
+            lib.criarPopUp(decoded.mensagem,deletaGrupos,true)
+        end
+        
+        if item1 == 0 or item2 == 0 or item3 == 0 then
             
-            local function funcaoRetornoOpiniao(decoded)
-                lib.criarPopUp(decoded.mensagem,deletaGrupos,true)
-            end
+            textBoxSaiDaTela()
+            lib.criarPopUp(lib.textos.coloqueEstrela,textBoxVoltaNaTela) 
             
-            if item1 == 0 or item2 == 0 or item3 == 0 then
-                
-                textBoxSaiDaTela()
-                lib.criarPopUp(lib.textos.coloqueEstrela,textBoxVoltaNaTela) 
-                
-            else
-                
-                textBoxSaiDaTela()
-                
-                local tabResposta = {
+        else
+            
+            textBoxSaiDaTela()
+            
+            local tabResposta = {
                 {idResposta = tabItem1.id,nuResposta = item1 },
                 {idResposta = tabItem2.id,nuResposta = item2 },
                 {idResposta = tabItem3.id,nuResposta = item3 },
-                }
-                
-                lib.servicos({["tipo"]= 1,["idRequisicao"] = idRequisicao ,["idUsuario"] = lib.dadosUsuario.id ,["idFranquia"]=tabLoja.id, ["dsResposta"] = textBox.text,["arrResposta"] = tabResposta },"mobile/feedback/responder",funcaoRetornoOpiniao)
-                
-            end
-                
-        end
-        local function backgroundTapped()
-            native.setKeyboardFocus( nil )
-            return true
+            }
+            
+            lib.servicos({["tipo"]= 1,["idRequisicao"] = idRequisicao ,["idUsuario"] = lib.dadosUsuario.id ,["idFranquia"]=tabLoja.id, ["dsResposta"] = textBox.text,["arrResposta"] = tabResposta },"mobile/feedback/responder",funcaoRetornoOpiniao)
+            
         end
         
-        local backGround = display.newImage("images/login/background.png", lib.centerX, lib.centerY)
-        backGround:addEventListener("tap",backgroundTapped)
-        backGround:scale(lib.scale,lib.scale)
-        feedBackGroup:insert(backGround)
-        
-        local backGroundSecondLayer = display.newImage("images/login/secondBackground.png", lib.centerX, lib.topY+120)
-        backGroundSecondLayer.anchorY = 0
-        backGroundSecondLayer:scale(lib.scale,lib.scale)
-        feedBackGroup:insert(backGroundSecondLayer)
-        
-        local textoLogo = display.newText(feedBackGroup, lib.textos.feedBack, lib.centerX+20, lib.topY+60, lib.textFont, 60)
-        textoLogo = lib.maxWidth(textoLogo,380, 72)
-        textoLogo:setFillColor(lib.textLogoColor[1],lib.textLogoColor[2],lib.textLogoColor[3])
-        
-        
-        local botaoFechar = display.newImage("images/alertas/botaoFechar.png", lib.rightX-60, lib.topY+60)
-        botaoFechar.id = 0
-        feedBackGroup:insert(botaoFechar)
-        botaoFechar:addEventListener("tap",botaoSairTapped)
+    end
+    local function backgroundTapped()
+        native.setKeyboardFocus( nil )
+        return true
+    end
     
-        lojaSelecionada = display.newText(feedBackGroup, tabLoja.nome, lib.centerX, lib.centerY-320, lib.textFont, 36)
-        lojaSelecionada:setFillColor(lib.textEnqueteColor[1],lib.textEnqueteColor[2],lib.textEnqueteColor[3])
-        
-        local pergunta = display.newText(feedBackGroup, feedBackPergunta, lib.centerX, lib.centerY-250, lib.textFont, 36)
-        pergunta = lib.maxWidth(pergunta,600, 44)
-        pergunta:setFillColor(lib.textEnqueteColor[1],lib.textEnqueteColor[2],lib.textEnqueteColor[3])
-        
-        
-        local campoOpiniao = display.newImage("images/opiniao/caixa.png", lib.centerX, lib.centerY-80)
-        campoOpiniao:addEventListener("tap",textBoxVoltaNaTela)
-        feedBackGroup:insert(campoOpiniao)
-
-        
-        item1Text = display.newText(feedBackGroup, tabItem1.nome, lib.centerX - 295, lib.centerY+80, lib.textFont, 36)
-        item1Text.anchorX = 0
-        item1Text = lib.maxWidth(item1Text,180, 44)
-        item1Text:setFillColor(lib.textEnqueteColor[1],lib.textEnqueteColor[2],lib.textEnqueteColor[3])
-        
-        for i = 1,4 do
-            estrelasItem1[i] = display.newImage("images/opiniao/botaoEstrela.png", lib.centerX - 180+(i*110), lib.centerY+70)
-            estrelasItem1[i].item = i
-            estrelasItem1[i]:addEventListener("tap",mudaItem1)
-            feedBackGroup:insert( estrelasItem1[i])
-        end
-        for i = 1,4 do
-            estrelasItem1Amarela[i] = display.newImage("images/opiniao/botaoEstrelaClicado.png", lib.centerX - 180+(i*110), lib.centerY+70)
-            estrelasItem1Amarela[i].alpha = 0
-            feedBackGroup:insert( estrelasItem1Amarela[i])
-        end
-        
-        
-        item2Text = display.newText(feedBackGroup, tabItem2.nome, lib.centerX - 295, lib.centerY+170, lib.textFont, 36)
-        item2Text = lib.maxWidth(item2Text,180, 44)
-        item2Text.anchorX = 0
-        item2Text:setFillColor(lib.textEnqueteColor[1],lib.textEnqueteColor[2],lib.textEnqueteColor[3])
-        
-        for i = 1,4 do
-            estrelasItem2[i] = display.newImage("images/opiniao/botaoEstrela.png", lib.centerX - 180+(i*110), lib.centerY+160)
-            estrelasItem2[i].item = i
-            estrelasItem2[i]:addEventListener("tap",mudaItem2)
-            feedBackGroup:insert( estrelasItem2[i])
-        end
-        for i = 1,4 do
-            estrelasItem2Amarela[i] = display.newImage("images/opiniao/botaoEstrelaClicado.png", lib.centerX - 180+(i*110), lib.centerY+160)
-            estrelasItem2Amarela[i].alpha = 0
-            feedBackGroup:insert( estrelasItem2Amarela[i])
-        end
-        
-        item3Text = display.newText(feedBackGroup, tabItem3.nome, lib.centerX - 295, lib.centerY+260, lib.textFont, 36)
-        item3Text = lib.maxWidth(item3Text,180, 44)
-        item3Text.anchorX = 0
-        item3Text:setFillColor(lib.textEnqueteColor[1],lib.textEnqueteColor[2],lib.textEnqueteColor[3])
-        
-        for i = 1,4 do
-            estrelasItem3[i] = display.newImage("images/opiniao/botaoEstrela.png", lib.centerX - 180+(i*110), lib.centerY+250)
-            estrelasItem3[i].item = i
-            estrelasItem3[i]:addEventListener("tap",mudaItem3)
-            feedBackGroup:insert( estrelasItem3[i])
-        end
-        for i = 1,4 do
-            estrelasItem3Amarela[i] = display.newImage("images/opiniao/botaoEstrelaClicado.png", lib.centerX - 180+(i*110), lib.centerY+250)
-            estrelasItem3Amarela[i].alpha = 0
-            feedBackGroup:insert( estrelasItem3Amarela[i])
-        end
-        
-        
-        local botaoConcluido = display.newImage("images/opiniao/botaoConcluido.png", lib.centerX, lib.bottomY - 100)
-        botaoConcluido:addEventListener("tap",botaoConcluidoTapped)
-        feedBackGroup:insert(botaoConcluido)    
+    local backGround = display.newImage("images/login/background.png", lib.centerX, lib.centerY)
+    backGround:addEventListener("tap",backgroundTapped)
+    backGround:scale(lib.scale,lib.scale)
+    feedBackGroup:insert(backGround)
+    
+    local backGroundSecondLayer = display.newImage("images/login/secondBackground.png", lib.centerX, lib.topY+120)
+    backGroundSecondLayer.anchorY = 0
+    backGroundSecondLayer:scale(lib.scale,lib.scale)
+    feedBackGroup:insert(backGroundSecondLayer)
+    
+    local textoLogo = display.newText(feedBackGroup, lib.textos.feedBack, lib.centerX+20, lib.topY+60, lib.textFont, 60)
+    textoLogo = lib.maxWidth(textoLogo,380, 72)
+    textoLogo:setFillColor(lib.textLogoColor[1],lib.textLogoColor[2],lib.textLogoColor[3])
     
     
+    local botaoFechar = display.newImage("images/alertas/botaoFechar.png", lib.rightX-60, lib.topY+60)
+    botaoFechar.id = 0
+    feedBackGroup:insert(botaoFechar)
+    botaoFechar:addEventListener("tap",botaoSairTapped)
     
-createTextBox()    
+    lojaSelecionada = display.newText(feedBackGroup, tabLoja.nome, lib.centerX, lib.centerY-320, lib.textFont, 36)
+    lojaSelecionada:setFillColor(lib.textEnqueteColor[1],lib.textEnqueteColor[2],lib.textEnqueteColor[3])
+    
+    local pergunta = display.newText(feedBackGroup, feedBackPergunta, lib.centerX, lib.centerY-250, lib.textFont, 36)
+    pergunta = lib.maxWidth(pergunta,600, 44)
+    pergunta:setFillColor(lib.textEnqueteColor[1],lib.textEnqueteColor[2],lib.textEnqueteColor[3])
+    
+    
+    local campoOpiniao = display.newImage("images/opiniao/caixa.png", lib.centerX, lib.centerY-80)
+    campoOpiniao:addEventListener("tap",textBoxVoltaNaTela)
+    feedBackGroup:insert(campoOpiniao)
+    
+    
+    item1Text = display.newText(feedBackGroup, tabItem1.nome, lib.centerX - 295, lib.centerY+80, lib.textFont, 36)
+    item1Text.anchorX = 0
+    item1Text = lib.maxWidth(item1Text,180, 44)
+    item1Text:setFillColor(lib.textEnqueteColor[1],lib.textEnqueteColor[2],lib.textEnqueteColor[3])
+    
+    for i = 1,4 do
+        estrelasItem1[i] = display.newImage("images/opiniao/botaoEstrela.png", lib.centerX - 180+(i*110), lib.centerY+70)
+        estrelasItem1[i].item = i
+        estrelasItem1[i]:addEventListener("tap",mudaItem1)
+        feedBackGroup:insert( estrelasItem1[i])
+    end
+    for i = 1,4 do
+        estrelasItem1Amarela[i] = display.newImage("images/opiniao/botaoEstrelaClicado.png", lib.centerX - 180+(i*110), lib.centerY+70)
+        estrelasItem1Amarela[i].alpha = 0
+        feedBackGroup:insert( estrelasItem1Amarela[i])
+    end
+    
+    
+    item2Text = display.newText(feedBackGroup, tabItem2.nome, lib.centerX - 295, lib.centerY+170, lib.textFont, 36)
+    item2Text = lib.maxWidth(item2Text,180, 44)
+    item2Text.anchorX = 0
+    item2Text:setFillColor(lib.textEnqueteColor[1],lib.textEnqueteColor[2],lib.textEnqueteColor[3])
+    
+    for i = 1,4 do
+        estrelasItem2[i] = display.newImage("images/opiniao/botaoEstrela.png", lib.centerX - 180+(i*110), lib.centerY+160)
+        estrelasItem2[i].item = i
+        estrelasItem2[i]:addEventListener("tap",mudaItem2)
+        feedBackGroup:insert( estrelasItem2[i])
+    end
+    for i = 1,4 do
+        estrelasItem2Amarela[i] = display.newImage("images/opiniao/botaoEstrelaClicado.png", lib.centerX - 180+(i*110), lib.centerY+160)
+        estrelasItem2Amarela[i].alpha = 0
+        feedBackGroup:insert( estrelasItem2Amarela[i])
+    end
+    
+    item3Text = display.newText(feedBackGroup, tabItem3.nome, lib.centerX - 295, lib.centerY+260, lib.textFont, 36)
+    item3Text = lib.maxWidth(item3Text,180, 44)
+    item3Text.anchorX = 0
+    item3Text:setFillColor(lib.textEnqueteColor[1],lib.textEnqueteColor[2],lib.textEnqueteColor[3])
+    
+    for i = 1,4 do
+        estrelasItem3[i] = display.newImage("images/opiniao/botaoEstrela.png", lib.centerX - 180+(i*110), lib.centerY+250)
+        estrelasItem3[i].item = i
+        estrelasItem3[i]:addEventListener("tap",mudaItem3)
+        feedBackGroup:insert( estrelasItem3[i])
+    end
+    for i = 1,4 do
+        estrelasItem3Amarela[i] = display.newImage("images/opiniao/botaoEstrelaClicado.png", lib.centerX - 180+(i*110), lib.centerY+250)
+        estrelasItem3Amarela[i].alpha = 0
+        feedBackGroup:insert( estrelasItem3Amarela[i])
+    end
+    
+    
+    local botaoConcluido = display.newImage("images/opiniao/botaoConcluido.png", lib.centerX, lib.bottomY - 100)
+    botaoConcluido:addEventListener("tap",botaoConcluidoTapped)
+    feedBackGroup:insert(botaoConcluido)    
+    
+    
+    
+    createTextBox()    
     
 end
 
@@ -1453,7 +1464,7 @@ function lib.mostrarExtrato()
             
             
             if i ~= 1 then
-              posY = posY +30  
+                posY = posY +30  
             end
             
             conteudo[i] = {}
@@ -1484,7 +1495,7 @@ function lib.mostrarExtrato()
                 
                 conteudo[i].textoValorNumero = display.newText( lib.textos.traco..decoded.arrExtrato[i].nuValor, lib.distanceX-20, posY+50,  lib.textFont, 36)
                 conteudo[i].textoValorNumero:setFillColor(lib.tituloCardapioColor[1],lib.tituloCardapioColor[2],lib.tituloCardapioColor[3])
-            
+                
             end
             conteudo[i].textoValorNumero.anchorX = 1
             scrollView:insert(conteudo[i].textoValorNumero)
@@ -1526,14 +1537,14 @@ function lib.mostrarExtrato()
         hideBackground = false,
         hideScrollBar  = true ,
         backgroundColor = {lib.scrollViewBackColor[1],lib.scrollViewBackColor[2],lib.scrollViewBackColor[3] },
-        }   
+    }   
     scrollView = lib.widget.newScrollView(opts)  
     grupoExtrato:insert(scrollView)
-
+    
     local barrinhaVermalhaCima = display.newImage("images/cadastro/barrinhaVermelha.png", lib.centerX, lib.topY+117)
     barrinhaVermalhaCima:scale(lib.scale,1)
     grupoExtrato:insert(barrinhaVermalhaCima)
-
+    
     local barrinhaVermalhaBaixo = display.newImage("images/cadastro/barrinhaVermelha.png", lib.centerX, lib.bottomY-6)
     barrinhaVermalhaBaixo:scale(lib.scale,1)
     grupoExtrato:insert(barrinhaVermalhaBaixo)
@@ -1543,7 +1554,7 @@ function lib.mostrarExtrato()
     rectCinza.x = lib.centerX-lib.leftX
     rectCinza.y =50
     scrollView:insert(rectCinza)
-
+    
     local textoData = display.newText( lib.textos.data, 20, 50,  lib.textFont, 48)
     textoData:setFillColor(lib.textConteudoColor[1],lib.textConteudoColor[2],lib.textConteudoColor[3])
     textoData.anchorX = 0
@@ -1587,24 +1598,24 @@ function lib.detalhesCardapio(nome,valor,descricao,urlImg)
     
     local function imageCardapioLoader(event)
         
-                    if ( event.isError ) then
-                        print ( "Network error - download failed" )
-                    else
-                    
-                        if transitionImage == true then
-                            event.target.width = 640
-                            event.target.height = 238
-                            event.target:scale(lib.scale,lib.scale)
-                            event.target.x = imgPosX
-                            event.target.y = imgPosY
-                            scrollView:insert(event.target)
-                            --event.target:toBack()
-                        else
-                           event.target:removeSelf()
-                           event.target = nil
-                        end
-                    
-                    end
+        if ( event.isError ) then
+            print ( "Network error - download failed" )
+        else
+            
+            if transitionImage == true then
+                event.target.width = 640
+                event.target.height = 238
+                event.target:scale(lib.scale,lib.scale)
+                event.target.x = imgPosX
+                event.target.y = imgPosY
+                scrollView:insert(event.target)
+                --event.target:toBack()
+            else
+                event.target:removeSelf()
+                event.target = nil
+            end
+            
+        end
         
     end
     
@@ -1634,14 +1645,14 @@ function lib.detalhesCardapio(nome,valor,descricao,urlImg)
         hideBackground = false,
         hideScrollBar  = true ,
         backgroundColor = {lib.scrollViewBackColor[1],lib.scrollViewBackColor[2],lib.scrollViewBackColor[3] },
-        }   
+    }   
     scrollView = lib.widget.newScrollView(opts)  
     detalhesCardapioGroup:insert(scrollView)
-
+    
     local barrinhaVermalhaCima = display.newImage("images/cadastro/barrinhaVermelha.png", lib.centerX, lib.topY+117)
     barrinhaVermalhaCima:scale(lib.scale,1)
     detalhesCardapioGroup:insert(barrinhaVermalhaCima)
-
+    
     local barrinhaVermalhaBaixo = display.newImage("images/cadastro/barrinhaVermelha.png", lib.centerX, lib.bottomY-6)
     barrinhaVermalhaBaixo:scale(lib.scale,1)
     detalhesCardapioGroup:insert(barrinhaVermalhaBaixo)
@@ -1678,7 +1689,7 @@ function lib.detalhesCardapio(nome,valor,descricao,urlImg)
     textoDesc.anchorX = 0
     textoDesc:setFillColor(lib.textDarkColor[1],lib.textDarkColor[2],lib.textDarkColor[2])
     scrollView:insert(textoDesc)
-
+    
     
     local textoDescricao = display.newText( descricao, 20, posY + 80, lib.distanceX-40,0,lib.textFont, 36)
     textoDescricao.anchorX = 0
@@ -1693,253 +1704,253 @@ function lib.detalhesCardapio(nome,valor,descricao,urlImg)
 end
 
 function lib.confirmarSenha(msg,funcaoRetorno)
+    
+    local grupoSenha = display.newGroup() 
+    
+    local textoSenha ,  textField
+    
+    local tocouFundo , focusTextField , textos , botaoOkTapped , xTapped
+    
+    function tocouFundo()
+        return true
+    end
+    function focusTextField()  
+        native.setKeyboardFocus(textField)
+    end
+    function textos(textEvent)
+        
+        if ( textEvent.phase == "began" ) then
             
-            local grupoSenha = display.newGroup() 
             
-            local textoSenha ,  textField
+            textField.text = textoSenha.text 
             
-            local tocouFundo , focusTextField , textos , botaoOkTapped , xTapped
             
-            function tocouFundo()
-                return true
-            end
-            function focusTextField()  
-                native.setKeyboardFocus(textField)
-            end
-            function textos(textEvent)
-
-                if ( textEvent.phase == "began" ) then
-
-
-                textField.text = textoSenha.text 
+            
+        elseif (  textEvent.phase == "submitted" ) then
+            
+            botaoOkTapped()
+            
+        elseif ( textEvent.phase == "editing" ) then
+            
+            
+            if string.len(textField.text) <= 55 then
                 
                 
-
-                elseif (  textEvent.phase == "submitted" ) then
-
-                botaoOkTapped()
+                textoSenha.text = textField.text
+                textoSenha = lib.maxWidth(textoSenha,480, 56)
                 
-                elseif ( textEvent.phase == "editing" ) then
-
-
-                        if string.len(textField.text) <= 55 then
-                                
-                         
-                            textoSenha.text = textField.text
-                            textoSenha = lib.maxWidth(textoSenha,480, 56)
-
-                        else
-
-                            textField.text =  string.sub(textField.text,1,55)  
-
-
-                        end
-                        
-                      
-
-                end
-
-            end 
-            function xTapped()
-           
-                textField:removeSelf()
-                textField = nil
-
-                native.setKeyboardFocus(nil)
-
-                grupoSenha:removeSelf()
-                grupoSenha = nil
-                
-                
-           
-            end
-            function botaoOkTapped ()
-           
-            if textoSenha.text == "" then 
-               -- lib.criarPopUp("Digite seu email")
             else
-                 xTapped()
-                funcaoRetorno(textoSenha.text)
-            end      
-                      
-
+                
+                textField.text =  string.sub(textField.text,1,55)  
+                
+                
             end
             
-            local fundoRect = display.newRect( lib.leftX,lib.topY,lib.distanceX,lib.distanceY) 
-            fundoRect:setFillColor(0,0,0)
-            fundoRect.alpha = 0.7
-            fundoRect.anchorX  = 0
-            fundoRect.anchorY = 0
-            fundoRect:addEventListener("tap",tocouFundo)
-            fundoRect:addEventListener("touch",tocouFundo)
-            grupoSenha:insert(fundoRect)   
-            
-            local caixaPop = display.newImage("images/alertas/popUpSenha.png", lib.centerX, lib.centerY-190)  
-            grupoSenha:insert(caixaPop)
-            
-            local botaoOk = display.newImage("images/saldo/botaoConfirmar.png", lib.centerX, lib.centerY+5) 
-            botaoOk:addEventListener("tap", botaoOkTapped)
-            grupoSenha:insert(botaoOk) 
-            
-            local xButton = display.newCircle( 0, 0, 90)
-            xButton.x = lib.centerX +210
-            xButton.y = lib.centerY-360
-            xButton.alpha = 0.01
-            xButton:addEventListener("tap",xTapped )
-            grupoSenha:insert(xButton) 
-            
-            local options = 
-            {
-                --parent = textGroup,
-                text = msg,   
-                x = lib.centerX,
-                y = lib.centerY-195,
-                width = 480,     --required for multi-line and alignment
-                font = lib.textFont,   
-                fontSize = 32,
-                align = "center"  --new alignment parameter
-            }
-
-            local textoPop = display.newText( options )
-            textoPop:setFillColor(lib.errorTextColor[1],lib.errorTextColor[2],lib.errorTextColor[3]) 
-            grupoSenha:insert(textoPop) 
-            
-            textoSenha = display.newText( "" , lib.centerX , lib.centerY-95, lib.passFont, 48)
-            textoSenha:setFillColor(lib.textConteudoColor[1],lib.textConteudoColor[2],lib.textConteudoColor[3])
-            grupoSenha:insert(textoSenha) 
-            
-            textField = native.newTextField( 0,-1000, 447, 50 )
-            textField.x = -1000
-            textField.y = -1000
-            textField.isSecure = true
-            textField.inputType = "default"
-            textField:addEventListener( "userInput", textos )
-            
-            transition.to(textField,{time = 300, onComplete = focusTextField })
             
             
         end
         
+    end 
+    function xTapped()
+        
+        textField:removeSelf()
+        textField = nil
+        
+        native.setKeyboardFocus(nil)
+        
+        grupoSenha:removeSelf()
+        grupoSenha = nil
+        
+        
+        
+    end
+    function botaoOkTapped ()
+        
+        if textoSenha.text == "" then 
+            -- lib.criarPopUp("Digite seu email")
+        else
+            xTapped()
+            funcaoRetorno(textoSenha.text)
+        end      
+        
+        
+    end
+    
+    local fundoRect = display.newRect( lib.leftX,lib.topY,lib.distanceX,lib.distanceY) 
+    fundoRect:setFillColor(0,0,0)
+    fundoRect.alpha = 0.7
+    fundoRect.anchorX  = 0
+    fundoRect.anchorY = 0
+    fundoRect:addEventListener("tap",tocouFundo)
+    fundoRect:addEventListener("touch",tocouFundo)
+    grupoSenha:insert(fundoRect)   
+    
+    local caixaPop = display.newImage("images/alertas/popUpSenha.png", lib.centerX, lib.centerY-190)  
+    grupoSenha:insert(caixaPop)
+    
+    local botaoOk = display.newImage("images/saldo/botaoConfirmar.png", lib.centerX, lib.centerY+5) 
+    botaoOk:addEventListener("tap", botaoOkTapped)
+    grupoSenha:insert(botaoOk) 
+    
+    local xButton = display.newCircle( 0, 0, 90)
+    xButton.x = lib.centerX +210
+    xButton.y = lib.centerY-360
+    xButton.alpha = 0.01
+    xButton:addEventListener("tap",xTapped )
+    grupoSenha:insert(xButton) 
+    
+    local options = 
+    {
+        --parent = textGroup,
+        text = msg,   
+        x = lib.centerX,
+        y = lib.centerY-195,
+        width = 480,     --required for multi-line and alignment
+        font = lib.textFont,   
+        fontSize = 32,
+        align = "center"  --new alignment parameter
+    }
+    
+    local textoPop = display.newText( options )
+    textoPop:setFillColor(lib.errorTextColor[1],lib.errorTextColor[2],lib.errorTextColor[3]) 
+    grupoSenha:insert(textoPop) 
+    
+    textoSenha = display.newText( "" , lib.centerX , lib.centerY-95, lib.passFont, 48)
+    textoSenha:setFillColor(lib.textConteudoColor[1],lib.textConteudoColor[2],lib.textConteudoColor[3])
+    grupoSenha:insert(textoSenha) 
+    
+    textField = native.newTextField( 0,-1000, 447, 50 )
+    textField.x = -1000
+    textField.y = -1000
+    textField.isSecure = true
+    textField.inputType = "default"
+    textField:addEventListener( "userInput", textos )
+    
+    transition.to(textField,{time = 300, onComplete = focusTextField })
+    
+    
+end
+
 function lib.confirmarValor(funcaoRetorno)
+    
+    local grupoSaldo = display.newGroup() 
+    
+    local textoSenha ,  textField
+    
+    local tocouFundo , focusTextField , textos , botaoOkTapped , xTapped
+    
+    function tocouFundo()
+        return true
+    end
+    function focusTextField()  
+        native.setKeyboardFocus(textField)
+    end
+    function textos(textEvent)
+        
+        if ( textEvent.phase == "began" ) then
             
-            local grupoSaldo = display.newGroup() 
             
-            local textoSenha ,  textField
+            textField.text = textoSaldoPop.text 
             
-            local tocouFundo , focusTextField , textos , botaoOkTapped , xTapped
+        elseif (  textEvent.phase == "submitted" ) then
             
-            function tocouFundo()
-                return true
-            end
-            function focusTextField()  
-                native.setKeyboardFocus(textField)
-            end
-            function textos(textEvent)
-
-                if ( textEvent.phase == "began" ) then
-
-
-                textField.text = textoSaldoPop.text 
-
-                elseif (  textEvent.phase == "submitted" ) then
-
-                botaoOkTapped()
+            botaoOkTapped()
+            
+        elseif ( textEvent.phase == "editing" ) then
+            
+            
+            if string.len(textField.text) <= 15 then
                 
-                elseif ( textEvent.phase == "editing" ) then
-
-
-                        if string.len(textField.text) <= 15 then
-                                
-                             if textField.text == "" then
-                                 textField.text = 0
-                             end   
-                             
-                            
-                            textoSaldoPop.text = lib.dinheiroMask(textField.text/100)
-
-
-                        else
-
-                            textField.text =  string.sub(textField.text,1,15)  
-
-
-                        end
-
-                end
-
-            end 
-            function xTapped()
-           
-                textField:removeSelf()
-                textField = nil
-
-                native.setKeyboardFocus(nil)
-
-                grupoSaldo:removeSelf()
-                grupoSaldo = nil
+                if textField.text == "" then
+                    textField.text = 0
+                end   
                 
                 
-           
-            end
-            function botaoOkTapped ()
-           
-            if textoSaldoPop.text == "0.00" then 
-               -- lib.criarPopUp("Digite seu email")
+                textoSaldoPop.text = lib.dinheiroMask(textField.text/100)
+                
+                
             else
-                 xTapped()
-                funcaoRetorno(textoSaldoPop.text)
-            end      
-                      
-
+                
+                textField.text =  string.sub(textField.text,1,15)  
+                
+                
             end
             
-            local fundoRect = display.newRect( lib.leftX,lib.topY,lib.distanceX,lib.distanceY) 
-            fundoRect:setFillColor(0,0,0)
-            fundoRect.alpha = 0.7
-            fundoRect.anchorX  = 0
-            fundoRect.anchorY = 0
-            fundoRect:addEventListener("tap",tocouFundo)
-            fundoRect:addEventListener("touch",tocouFundo)
-            grupoSaldo:insert(fundoRect)   
-            
-            local caixaPop = display.newImage("images/saldo/popUp.png", lib.centerX, lib.centerY-190)  
-            grupoSaldo:insert(caixaPop)
-            
-            local botaoOk = display.newImage("images/saldo/botaoConfirmar.png", lib.centerX, lib.centerY) 
-            botaoOk:addEventListener("tap", botaoOkTapped)
-            grupoSaldo:insert(botaoOk) 
-            
-            local xButton = display.newCircle( 0, 0, 90)
-            xButton.x = lib.centerX +210
-            xButton.y = lib.centerY-360
-            xButton.alpha = 0.01
-            xButton:addEventListener("tap",xTapped )
-            grupoSaldo:insert(xButton) 
-            
-            
-            textoSaldoPop = display.newText( "0.00" , lib.centerX , lib.centerY-135, lib.textFont, 48)
-            textoSaldoPop:setFillColor(lib.textConteudoColor[1],lib.textConteudoColor[2],lib.textConteudoColor[3])
-            grupoSaldo:insert(textoSaldoPop) 
-            
-            textField = native.newTextField( 0,-1000, 447, 50 )
-            textField.x = -1000
-            textField.y = -1000
-            textField.isSecure = true
-            textField.inputType = "number"
-            textField:addEventListener( "userInput", textos )
-            
-            transition.to(textField,{time = 300, onComplete = focusTextField })
-            
-            
-        end   
+        end
+        
+    end 
+    function xTapped()
+        
+        textField:removeSelf()
+        textField = nil
+        
+        native.setKeyboardFocus(nil)
+        
+        grupoSaldo:removeSelf()
+        grupoSaldo = nil
+        
+        
+        
+    end
+    function botaoOkTapped ()
+        
+        if textoSaldoPop.text == "0.00" then 
+            -- lib.criarPopUp("Digite seu email")
+        else
+            xTapped()
+            funcaoRetorno(textoSaldoPop.text)
+        end      
+        
+        
+    end
+    
+    local fundoRect = display.newRect( lib.leftX,lib.topY,lib.distanceX,lib.distanceY) 
+    fundoRect:setFillColor(0,0,0)
+    fundoRect.alpha = 0.7
+    fundoRect.anchorX  = 0
+    fundoRect.anchorY = 0
+    fundoRect:addEventListener("tap",tocouFundo)
+    fundoRect:addEventListener("touch",tocouFundo)
+    grupoSaldo:insert(fundoRect)   
+    
+    local caixaPop = display.newImage("images/saldo/popUp.png", lib.centerX, lib.centerY-190)  
+    grupoSaldo:insert(caixaPop)
+    
+    local botaoOk = display.newImage("images/saldo/botaoConfirmar.png", lib.centerX, lib.centerY) 
+    botaoOk:addEventListener("tap", botaoOkTapped)
+    grupoSaldo:insert(botaoOk) 
+    
+    local xButton = display.newCircle( 0, 0, 90)
+    xButton.x = lib.centerX +210
+    xButton.y = lib.centerY-360
+    xButton.alpha = 0.01
+    xButton:addEventListener("tap",xTapped )
+    grupoSaldo:insert(xButton) 
+    
+    
+    textoSaldoPop = display.newText( "0.00" , lib.centerX , lib.centerY-135, lib.textFont, 48)
+    textoSaldoPop:setFillColor(lib.textConteudoColor[1],lib.textConteudoColor[2],lib.textConteudoColor[3])
+    grupoSaldo:insert(textoSaldoPop) 
+    
+    textField = native.newTextField( 0,-1000, 447, 50 )
+    textField.x = -1000
+    textField.y = -1000
+    textField.isSecure = true
+    textField.inputType = "number"
+    textField:addEventListener( "userInput", textos )
+    
+    transition.to(textField,{time = 300, onComplete = focusTextField })
+    
+    
+end   
 
 function lib.removerCenas()
     local tabCenas = {
-    "main_login","main_lojas","main_mais","main_menu","main_meuCadastro","main_saldo","main_opiniao",
+        "main_login","main_lojas","main_mais","main_menu","main_meuCadastro","main_saldo","main_opiniao",
     }
     
     for i =1,#tabCenas do
-       lib.composer.removeScene(tabCenas[i]) 
+        lib.composer.removeScene(tabCenas[i]) 
     end
     
 end
@@ -1960,368 +1971,368 @@ function lib.validarCpf(cpf)
    - O décimo digito (penultimo) é o DV MOD 11 dos 9 digitos anteriores.
    - O ultimo digito é o DV MOD 11 dos 10 digitos anteriores.
 
-   ]]
-
-   
-   local c = cpf:sub(1,9)
-   local dv = 0
-
-   for i, d in c:gmatch"()(.)" do
-       dv = dv + tonumber(d)*(11-i)
-   end
-
-   if dv == 0 then
-       return false
-   end
-
-   dv = 11 - math.fmod(dv, 11)
-
-   if dv > 9 then
-       dv = 0
-   end
-
-   if dv ~= tonumber(cpf:sub(10,10)) then
-       return false
-   end
-
-   dv = dv * 2
-   for i, d in c:gmatch"()(.)" do
-       dv = dv + tonumber(d)*(12-i)
-   end
-   dv = 11 - math.fmod(dv, 11)
-   if dv > 9 then
-       dv = 0
-   end
-   
-   
-   return dv == tonumber(cpf:sub(11))
-   
+    ]]
+    
+    
+    local c = cpf:sub(1,9)
+    local dv = 0
+    
+    for i, d in c:gmatch"()(.)" do
+        dv = dv + tonumber(d)*(11-i)
+    end
+    
+    if dv == 0 then
+        return false
+    end
+    
+    dv = 11 - math.fmod(dv, 11)
+    
+    if dv > 9 then
+        dv = 0
+    end
+    
+    if dv ~= tonumber(cpf:sub(10,10)) then
+        return false
+    end
+    
+    dv = dv * 2
+    for i, d in c:gmatch"()(.)" do
+        dv = dv + tonumber(d)*(12-i)
+    end
+    dv = 11 - math.fmod(dv, 11)
+    if dv > 9 then
+        dv = 0
+    end
+    
+    
+    return dv == tonumber(cpf:sub(11))
+    
 end
 
 
 
 function lib.cursorSome()
-       lib.cursor.transition =  transition.to(lib.cursor,{time = 1000,alpha = 0,onComplete = lib.cursorAparece })
+    lib.cursor.transition =  transition.to(lib.cursor,{time = 1000,alpha = 0,onComplete = lib.cursorAparece })
 end
 function lib.cursorAparece(opt)
-        local cursorColor = opt.cursorColor or false
-        if cursorColor ~= false then
-             lib.cursor:setFillColor(lib[cursorColor][1],lib[cursorColor][2],lib[cursorColor][3])
-        end
-        lib.cursor.alpha = 1
-        lib.cursor.transition =  transition.to(lib.cursor,{time = 700,alpha = 1,onComplete = lib.cursorSome })
+    local cursorColor = opt.cursorColor or false
+    if cursorColor ~= false then
+        lib.cursor:setFillColor(lib[cursorColor][1],lib[cursorColor][2],lib[cursorColor][3])
+    end
+    lib.cursor.alpha = 1
+    lib.cursor.transition =  transition.to(lib.cursor,{time = 700,alpha = 1,onComplete = lib.cursorSome })
 end
 function lib.cursorPara()
-        transition.cancel(lib.cursor.transition)
+    transition.cancel(lib.cursor.transition)
 end
 
 lib.scrollView,lib.tableDefaultText, lib.tableText = {},{},{}
 
 function lib.campTapped(event)
-        
-        --obrigatorio // textEdit , cena
-        --opicional // align,maxChar,mask,inputType,isSexure,cusorColor , usaScroll , maxWidth , maxHeight , scrollY
     
-        local cena = event.target.cena
+    --obrigatorio // textEdit , cena
+    --opicional // align,maxChar,mask,inputType,isSexure,cusorColor , usaScroll , maxWidth , maxHeight , scrollY
+    
+    local cena = event.target.cena
     
     
-        local usaScroll = event.target.usaScroll or true
-        local align = event.target.align or "left"
-        local maxChar =  event.target.maxChar or 35
-        local mask = event.target.mask or "noMask"
-        local inputType = event.target.inputType or "default"
-        local isSecure = event.target.isSecure or false
-        local cursorColor = event.target.cursorColor or "textConteudoColor"
-        local textColor = event.target.textColor or "textConteudoColor"
-        local maxWidth = event.target.maxWidth or 540
-        local maxHeight = event.target.maxHeight or 88
-        local scrollY = event.target.scrollY or 100
+    local usaScroll = event.target.usaScroll or true
+    local align = event.target.align or "left"
+    local maxChar =  event.target.maxChar or 35
+    local mask = event.target.mask or "noMask"
+    local inputType = event.target.inputType or "default"
+    local isSecure = event.target.isSecure or false
+    local cursorColor = event.target.cursorColor or "textConteudoColor"
+    local textColor = event.target.textColor or "textConteudoColor"
+    local maxWidth = event.target.maxWidth or 540
+    local maxHeight = event.target.maxHeight or 88
+    local scrollY = event.target.scrollY or 100
+    
+    lib.tableDefaultText[cena][event.target.textEdit].alpha = 0
+    
+    
+    
+    local function focusTextField()
         
-        lib.tableDefaultText[cena][event.target.textEdit].alpha = 0
+        native.setKeyboardFocus(textField)
         
-            
-
-        local function focusTextField()
-
-            native.setKeyboardFocus(textField)
-
+    end
+    
+    local function deleteTextField(ob)
+        
+        if  textField.text == "" then
+            lib.tableDefaultText[cena][event.target.textEdit].alpha = 1
+            lib.tableText[cena][event.target.textEdit].text = ""
         end
-
-        local function deleteTextField(ob)
-
-                        if  textField.text == "" then
-                            lib.tableDefaultText[cena][event.target.textEdit].alpha = 1
-                            lib.tableText[cena][event.target.textEdit].text = ""
-                        end
-
-
-
-                       textField:removeSelf()
-                       textField = nil
-                       native.setKeyboardFocus( nil )
-
-                       ob.target:removeSelf()
-                       ob.target = nil
-
-
-                       lib.cursorPara()
-                       lib.cursor:removeSelf()
-                       lib.cursor = nil
-
-
-                       
-                       
-                        local opts = {
-                        y = 0,
-                        time = 300,
-                        }
-                        lib.scrollView[cena]:scrollToPosition( opts ) 
-
-
-
-
-        end
-
-        local function textos(textEvent)
-
-            if ( textEvent.phase == "began" ) then
-
+        
+        
+        
+        textField:removeSelf()
+        textField = nil
+        native.setKeyboardFocus( nil )
+        
+        ob.target:removeSelf()
+        ob.target = nil
+        
+        
+        lib.cursorPara()
+        lib.cursor:removeSelf()
+        lib.cursor = nil
+        
+        
+        
+        
+        local opts = {
+            y = 0,
+            time = 300,
+        }
+        lib.scrollView[cena]:scrollToPosition( opts ) 
+        
+        
+        
+        
+    end
+    
+    local function textos(textEvent)
+        
+        if ( textEvent.phase == "began" ) then
             
-              lib.tableText[cena][event.target.textEdit].text = lib[mask].apply(textField.text)
             
-             lib.cursor.x = lib.tableText[cena][event.target.textEdit].x + lib.tableText[cena][event.target.textEdit].contentWidth+1
-             lib.cursor.y = lib.tableText[cena][event.target.textEdit].y
-             lib.cursorAparece({["cursorColor"] = cursorColor})
-
-            elseif ( textEvent.phase == "ended" or textEvent.phase == "submitted" ) then
-
-
-            elseif ( textEvent.phase == "editing" ) then
-
-
-                    if string.len(textField.text) <= maxChar then
-
-                        lib.tableText[cena][event.target.textEdit].text = lib[mask].apply(textField.text)
-                        lib.tableText[cena][event.target.textEdit] = lib.maxWidth(lib.tableText[cena][event.target.textEdit],maxWidth, maxHeight)
-
-                    else
-
-                        textField.text =  string.sub(textField.text,1,maxChar)  
-
-                    end
-
-                    lib.cursor.x = lib.tableText[cena][event.target.textEdit].x + lib.tableText[cena][event.target.textEdit].contentWidth+1
-                    lib.cursorPara()
-                    lib.cursorAparece({["cursorColor"] = cursorColor})
-
+            lib.tableText[cena][event.target.textEdit].text = lib[mask].apply(textField.text)
+            
+            lib.cursor.x = lib.tableText[cena][event.target.textEdit].x + lib.tableText[cena][event.target.textEdit].contentWidth+1
+            lib.cursor.y = lib.tableText[cena][event.target.textEdit].y
+            lib.cursorAparece({["cursorColor"] = cursorColor})
+            
+        elseif ( textEvent.phase == "ended" or textEvent.phase == "submitted" ) then
+            
+            
+        elseif ( textEvent.phase == "editing" ) then
+            
+            
+            if string.len(textField.text) <= maxChar then
+                
+                lib.tableText[cena][event.target.textEdit].text = lib[mask].apply(textField.text)
+                lib.tableText[cena][event.target.textEdit] = lib.maxWidth(lib.tableText[cena][event.target.textEdit],maxWidth, maxHeight)
+                
+            else
+                
+                textField.text =  string.sub(textField.text,1,maxChar)  
+                
             end
-
-        end 
-
-
-        textField = native.newTextField( lib.centerX,-1000, event.target.contentWidth-100, event.target.height)
-        textField.text = lib[mask].getRealText(lib.tableText[cena][event.target.textEdit].text)
-        textField.placeholder = lib.tableDefaultText[cena][event.target.textEdit].text
-        textField.align = align
-        textField.hasBackground = false
-        textField.inputType = inputType
-        textField.isSecure = isSecure
-        textField.isFontSizeScaled = true  -- make the field use the same font units as the text object
-        textField.size = lib.tableText[cena][event.target.textEdit].size + 10
-        textField:setTextColor( lib[textColor][1], lib[textColor][2], lib[textColor][3] )
-        textField:resizeHeightToFitFont()
-        textField:addEventListener( "userInput", textos )
-        
-        textField:setSelection( 10000,10000 )
-
-
-        deleteRect = display.newRect( lib.leftX, lib.topY, lib.distanceX, lib.distanceY)
-        deleteRect:setFillColor(1,0,0)
-        deleteRect.alpha = 0.01
-        deleteRect.anchorX = 0
-        deleteRect.anchorY = 0
-        deleteRect:addEventListener("touch",deleteTextField)
-        
-        
-        lib.cursor = display.newRect(0,0,6,60 )
-        lib.cursor.x = -150
-        lib.cursor.y = -150
-        lib.cursor:setFillColor(lib[cursorColor][1],lib[cursorColor][2],lib[cursorColor][3])
-        lib.scrollView[cena]:insert(lib.cursor)
-
-
-        
             
-        local options = {
+            lib.cursor.x = lib.tableText[cena][event.target.textEdit].x + lib.tableText[cena][event.target.textEdit].contentWidth+1
+            lib.cursorPara()
+            lib.cursorAparece({["cursorColor"] = cursorColor})
+            
+        end
+        
+    end 
+    
+    
+    textField = native.newTextField( lib.centerX,-1000, event.target.contentWidth-100, event.target.height)
+    textField.text = lib[mask].getRealText(lib.tableText[cena][event.target.textEdit].text)
+    textField.placeholder = lib.tableDefaultText[cena][event.target.textEdit].text
+    textField.align = align
+    textField.hasBackground = false
+    textField.inputType = inputType
+    textField.isSecure = isSecure
+    textField.isFontSizeScaled = true  -- make the field use the same font units as the text object
+    textField.size = lib.tableText[cena][event.target.textEdit].size + 10
+    textField:setTextColor( lib[textColor][1], lib[textColor][2], lib[textColor][3] )
+    textField:resizeHeightToFitFont()
+    textField:addEventListener( "userInput", textos )
+    
+    textField:setSelection( 10000,10000 )
+    
+    
+    deleteRect = display.newRect( lib.leftX, lib.topY, lib.distanceX, lib.distanceY)
+    deleteRect:setFillColor(1,0,0)
+    deleteRect.alpha = 0.01
+    deleteRect.anchorX = 0
+    deleteRect.anchorY = 0
+    deleteRect:addEventListener("touch",deleteTextField)
+    
+    
+    lib.cursor = display.newRect(0,0,6,60 )
+    lib.cursor.x = -150
+    lib.cursor.y = -150
+    lib.cursor:setFillColor(lib[cursorColor][1],lib[cursorColor][2],lib[cursorColor][3])
+    lib.scrollView[cena]:insert(lib.cursor)
+    
+    
+    
+    
+    local options = {
         y = -event.target.y+scrollY,
         time = 400,
         onComplete = focusTextField,
-        }
-        lib.scrollView[cena]:scrollToPosition( options ) 
-                  
-  
-
+    }
+    lib.scrollView[cena]:scrollToPosition( options ) 
+    
+    
+    
 end
 
 function lib.maxWidth(obj,maxWidth, maxHeight)
     print("tamanho",obj.contentHeight)
-   if obj.contentWidth > maxWidth then
-   
+    if obj.contentWidth > maxWidth then
+        
         obj:scale(maxWidth/obj.contentWidth,maxWidth/obj.contentWidth  ) 
-   
-   else
-       
-      local scaleWidth = maxWidth/obj.contentWidth
-      local scaleHeight = maxHeight/obj.contentHeight
-      
-      if scaleWidth > scaleHeight then
-          obj:scale(scaleHeight,scaleHeight)
-      else
-          obj:scale(scaleWidth,scaleWidth)
-      end
-   
-
-   end
-       
-   return obj    
+        
+    else
+        
+        local scaleWidth = maxWidth/obj.contentWidth
+        local scaleHeight = maxHeight/obj.contentHeight
+        
+        if scaleWidth > scaleHeight then
+            obj:scale(scaleHeight,scaleHeight)
+        else
+            obj:scale(scaleWidth,scaleWidth)
+        end
+        
+        
+    end
+    
+    return obj    
     
 end
 
 function lib.maxHeight(obj,maxWidth, maxHeight)
-   if obj.contentHeight > maxHeight then
-   
+    if obj.contentHeight > maxHeight then
+        
         obj:scale(maxHeight/obj.contentHeight,maxHeight/obj.contentHeight  ) 
-   
-   else
-       
-      local scaleWidth = maxWidth/obj.contentWidth
-      local scaleHeight = maxHeight/obj.contentHeight
-      
-      if scaleHeight > scaleWidth then
-          obj:scale(scaleWidth,scaleWidth)
-      else
-          obj:scale(scaleHeight,scaleHeight)
-      end
-   
-
-   end
-       
-   return obj    
+        
+    else
+        
+        local scaleWidth = maxWidth/obj.contentWidth
+        local scaleHeight = maxHeight/obj.contentHeight
+        
+        if scaleHeight > scaleWidth then
+            obj:scale(scaleWidth,scaleWidth)
+        else
+            obj:scale(scaleHeight,scaleHeight)
+        end
+        
+        
+    end
+    
+    return obj    
     
 end
 
 function lib.newMask(mask)
-	local obj = {}
-	obj.MASKTEXT = mask 
-	obj.REALTEXT = ""
-	obj.MASKEDTEXT = mask
-
-	obj.REALTEXTCHARS = {}
-	obj.MASKCHARS = {}
-	obj.MASKEDTEXTCHARS = {}
-	obj.VALIDSPACESIDS = {}
-	obj.MASKUNIQUESPECIALCHARS = {}
-
-	function obj.separateChars(s)
-		local t = {}
-		for i=1,string.len( s ) do
-			t[#t+1] = string.sub(s,i,i )
-		end
-		return t
-	end
-
-	function obj.enumerateValidChars()
-		for i=1,#obj.MASKCHARS do
-			if (obj.MASKCHARS[i] == "_") then
-				obj.VALIDSPACESIDS[#obj.VALIDSPACESIDS + 1] = i
-			end
-		end
-	end
-
-	function obj.concatChars(t)
-		local text = ""
-		for i=1,#t do
-			text = text..t[i]
-		end
-		return text
-	end
-
-	function obj.contains(t,s)
-		for i=1,#t do
-			if (t[i] == s) then
-				return true	
-			end
-		end
-		return false	
-	end
-
-	function obj.getUniqueMaskChars()
-		for i=1,#obj.MASKCHARS do
-			local char = obj.MASKCHARS[i]
-			if (obj.contains(obj.MASKUNIQUESPECIALCHARS,char)) then
-			else
-				obj.MASKUNIQUESPECIALCHARS[#obj.MASKUNIQUESPECIALCHARS+1] = char 
-	
-			end
-		end
-	end
-
-	function obj.removeMaskFromString(s)
-		local cleanChars = {}
-		local chars = obj.separateChars(s)
-		for i=1,#chars do
-			if (obj.contains(obj.MASKUNIQUESPECIALCHARS,chars[i])) then
-			else 	
-				cleanChars[#cleanChars+1] = chars[i]
-			end
-		end
-		return obj.concatChars(cleanChars)
-	end
-
-	function obj.apply(s,tf)
-		obj.MASKEDTEXTCHARS = obj.separateChars(obj.MASKTEXT)
-		obj.REALTEXT = obj.removeMaskFromString(s)
-		obj.REALTEXTCHARS = obj.separateChars(obj.REALTEXT)
-		local aux = 0
-		
-		for i=1,#obj.REALTEXTCHARS do
-			if (obj.MASKEDTEXTCHARS[i] ~= nil and obj.VALIDSPACESIDS[i] ~= nil) then
-				obj.MASKEDTEXTCHARS[obj.VALIDSPACESIDS[i]] = string.sub(obj.REALTEXT,i,i )
-				aux = aux + 1
-			end	
-		end
-		
-		obj.MASKEDTEXT =  obj.concatChars(obj.MASKEDTEXTCHARS)
-		return obj.MASKEDTEXT
-
-	end
-
-	function obj.getRealText()
-		return obj.REALTEXT
-	end
-
-	function obj.getMaskedText()
-		return obj.MASKEDTEXT
-	end
-
-	function obj.getMaskText()
-		return obj.MASKTEXT
-	end
-
-	function obj.setMask(s)
-		obj.MASKTEXT = s
-		obj.MASKEDTEXTCHARS = obj.separateChars(obj.MASKTEXT)
-		obj.MASKCHARS = obj.separateChars(obj.MASKTEXT)
-		obj.getUniqueMaskChars()
-		
-	end
-
-	obj.MASKEDTEXTCHARS = obj.separateChars(obj.MASKTEXT)
-	obj.MASKCHARS = obj.separateChars(obj.MASKTEXT)
-	obj.getUniqueMaskChars()
-	obj.enumerateValidChars()
+    local obj = {}
+    obj.MASKTEXT = mask 
+    obj.REALTEXT = ""
+    obj.MASKEDTEXT = mask
+    
+    obj.REALTEXTCHARS = {}
+    obj.MASKCHARS = {}
+    obj.MASKEDTEXTCHARS = {}
+    obj.VALIDSPACESIDS = {}
+    obj.MASKUNIQUESPECIALCHARS = {}
+    
+    function obj.separateChars(s)
+        local t = {}
+        for i=1,string.len( s ) do
+            t[#t+1] = string.sub(s,i,i )
+        end
+        return t
+    end
+    
+    function obj.enumerateValidChars()
+        for i=1,#obj.MASKCHARS do
+            if (obj.MASKCHARS[i] == "_") then
+                obj.VALIDSPACESIDS[#obj.VALIDSPACESIDS + 1] = i
+            end
+        end
+    end
+    
+    function obj.concatChars(t)
+        local text = ""
+        for i=1,#t do
+            text = text..t[i]
+        end
+        return text
+    end
+    
+    function obj.contains(t,s)
+        for i=1,#t do
+            if (t[i] == s) then
+                return true	
+            end
+        end
+        return false	
+    end
+    
+    function obj.getUniqueMaskChars()
+        for i=1,#obj.MASKCHARS do
+            local char = obj.MASKCHARS[i]
+            if (obj.contains(obj.MASKUNIQUESPECIALCHARS,char)) then
+            else
+                obj.MASKUNIQUESPECIALCHARS[#obj.MASKUNIQUESPECIALCHARS+1] = char 
+                
+            end
+        end
+    end
+    
+    function obj.removeMaskFromString(s)
+        local cleanChars = {}
+        local chars = obj.separateChars(s)
+        for i=1,#chars do
+            if (obj.contains(obj.MASKUNIQUESPECIALCHARS,chars[i])) then
+            else 	
+                cleanChars[#cleanChars+1] = chars[i]
+            end
+        end
+        return obj.concatChars(cleanChars)
+    end
+    
+    function obj.apply(s,tf)
+        obj.MASKEDTEXTCHARS = obj.separateChars(obj.MASKTEXT)
+        obj.REALTEXT = obj.removeMaskFromString(s)
+        obj.REALTEXTCHARS = obj.separateChars(obj.REALTEXT)
+        local aux = 0
         
-	return obj
+        for i=1,#obj.REALTEXTCHARS do
+            if (obj.MASKEDTEXTCHARS[i] ~= nil and obj.VALIDSPACESIDS[i] ~= nil) then
+                obj.MASKEDTEXTCHARS[obj.VALIDSPACESIDS[i]] = string.sub(obj.REALTEXT,i,i )
+                aux = aux + 1
+            end	
+        end
+        
+        obj.MASKEDTEXT =  obj.concatChars(obj.MASKEDTEXTCHARS)
+        return obj.MASKEDTEXT
+        
+    end
+    
+    function obj.getRealText()
+        return obj.REALTEXT
+    end
+    
+    function obj.getMaskedText()
+        return obj.MASKEDTEXT
+    end
+    
+    function obj.getMaskText()
+        return obj.MASKTEXT
+    end
+    
+    function obj.setMask(s)
+        obj.MASKTEXT = s
+        obj.MASKEDTEXTCHARS = obj.separateChars(obj.MASKTEXT)
+        obj.MASKCHARS = obj.separateChars(obj.MASKTEXT)
+        obj.getUniqueMaskChars()
+        
+    end
+    
+    obj.MASKEDTEXTCHARS = obj.separateChars(obj.MASKTEXT)
+    obj.MASKCHARS = obj.separateChars(obj.MASKTEXT)
+    obj.getUniqueMaskChars()
+    obj.enumerateValidChars()
+    
+    return obj
 end
 lib.noMask = {}
 function  lib.noMask.apply (stg)

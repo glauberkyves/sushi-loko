@@ -1,4 +1,4 @@
-display.setStatusBar( display.HiddenStatusBar )
+require "CiderDebugger";display.setStatusBar( display.HiddenStatusBar )
 
 local lib = require("main_library")
 
