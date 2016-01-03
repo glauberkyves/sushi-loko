@@ -459,10 +459,7 @@ end
 function lib.criarMapa(markerTouched)
     
     local grupoMapa = display.newGroup() 
-    
-    local tocouFundo   , botaoTapped , xTapped , markerTapped , markerTapped
-    
-    local myMap
+    local tocouFundo   , botaoTapped , xTapped , markerTapped , markerTapped, myMap, locationTable
     
     function tocouFundo()
         return true
@@ -525,43 +522,105 @@ function lib.criarMapa(markerTouched)
     rect.y = lib.centerY+55
     grupoMapa:insert(rect)
     
-    myMap = native.newMapView( lib.centerX, lib.centerY+55, lib.distanceX, lib.distanceY-135 )
-    
     local function createMarkers()
-        for i = 1 , #lib.tabCidades[lib.cidadeSelecionada].lojas do
-            local options = 
-            {
-                imageFile = "images/lojas/marcadorMapa.png", 
-                title = lib.tabCidades[lib.cidadeSelecionada].lojas[i].nome,
-                subtitle = lib.tabCidades[lib.cidadeSelecionada].lojas[i].endereco,
-                listener = markerTapped 
-            }
-            myMap:addMarker( 37.331692, -122.030456, options )
-            --            myMap:addMarker(lib.tabCidades[lib.cidadeSelecionada].lojas[i].latitude,lib.tabCidades[lib.cidadeSelecionada].lojas[i].longitude , {
-            --                imageFile = "images/lojas/marcadorMapa.png", 
-            --                title = lib.tabCidades[lib.cidadeSelecionada].lojas[i].nome,
-            --                subtitle = lib.tabCidades[lib.cidadeSelecionada].lojas[i].endereco,
-            --                listener = markerTapped 
-            --            })
-            qtTapped[i] = 0
+        
+        
+        --        if  myMap then
+        --            myMap.x = lib.centerX
+        --            myMap.y = lib.centerY+(lib.topBarSize-lib.bottomBarSize)/2
+        --        else
+        --            myMap = native.newMapView( lib.centerX, lib.centerY+55, lib.distanceX, lib.distanceY-135 )
+        --        end
+        --        
+        --        local locationTable = myMap:getUserLocation()
+        --        
+        --        if locationTable.latitude ~= nil and locationTable.longitude~= nil then
+        --            myMap:setRegion (lib.tabCidades[lib.cidadeSelecionada].latitudeInicial , lib.tabCidades[lib.cidadeSelecionada].longitudeInicial ,1 ,1)
+        --        end
+        --        
+        --        for i = 1 , #lib.tabCidades[lib.cidadeSelecionada].lojas do
+        --            local lat = lib.tabCidades[lib.cidadeSelecionada].lojas[i].latitude
+        --            local lon = lib.tabCidades[lib.cidadeSelecionada].lojas[i].longitude
+        --            
+        --            if lat ~= nil and lon ~= nil then
+        --                myMap:addMarker(
+        --                tonumber(37.331692), 
+        --                tonumber(-122.030456),
+        --                {
+        --                    title = tostring(lib.tabCidades[lib.cidadeSelecionada].lojas[i].nome),
+        --                    imageFile = "images/lojas/marcadorMapa.png", 
+        --                    subtitle = tostring(lib.tabCidades[lib.cidadeSelecionada].lojas[i].endereco),
+        --                    listener = markerTapped 
+        --                })
+        --                
+        --                qtTapped[i] = 0
+        --            end
+        --        end
+    end
+    
+    -- Map marker listener function
+    local function markerListener(event)
+        print( "type: ", event.type )  -- event type
+        print( "markerId: ", event.markerId )  -- ID of the marker that was touched
+        print( "lat: ", event.latitude )  -- latitude of the marker
+        print( "long: ", event.longitude )  -- longitude of the marker
+    end
+    
+    
+    --    if system.getInfo( "platformName" ) == "Android" then
+    --        createMarkers()
+    ----        timer.performWithDelay(4000, createMarkers)
+    --    else
+    --        createMarkers()
+    --    end
+    
+    local function getVersion()
+        
+        local function lojas()
+            for i = 1 , #lib.tabCidades[lib.cidadeSelecionada].lojas do
+                local lat = lib.tabCidades[lib.cidadeSelecionada].lojas[i].latitude
+                local lon = lib.tabCidades[lib.cidadeSelecionada].lojas[i].longitude
+                
+                if lat ~= nil and lon ~= nil then
+                    myMap:addMarker(
+                    tonumber(lat), 
+                    tonumber(lon),
+                    {
+                        title = tostring(lib.tabCidades[lib.cidadeSelecionada].lojas[i].nome),
+                        imageFile = "images/lojas/marcadorMapa.png", 
+                        subtitle = tostring(lib.tabCidades[lib.cidadeSelecionada].lojas[i].endereco),
+                        listener = markerTapped 
+                    })
+                    
+                    qtTapped[i] = 0
+                end
+            end
         end
         
-        --        myMap:setRegion (lib.tabCidades[lib.cidadeSelecionada].latitudeInicial , lib.tabCidades[lib.cidadeSelecionada].longitudeInicial ,1 ,1)
-        
+        lib.servicos({},"mobile/franqueador/listar/lojas", lojas)
     end
-    local function delayMap()
-        if myMap ~=nil then
-            createMarkers()
+    
+    local function funcaoDelay()
+        locationTable = myMap:getUserLocation()
+        
+        if locationTable.latitude ~= nil and locationTable.longitude~= nil then
+            myMap:setRegion (locationTable.latitude , locationTable.longitude ,1 ,1)
+        end
+        
+        timer.performWithDelay(5000, getVersion)
+    end
+    
+    local function funcaoMudarMapa ()
+        if  myMap then
+            myMap.x = lib.centerX
+            myMap.y = lib.centerY+(lib.topBarSize-lib.bottomBarSize)/2
+        else
+            myMap = native.newMapView( lib.centerX, lib.centerY+55, lib.distanceX, lib.distanceY-135 )
+            delayPerformance = timer.performWithDelay(5000, funcaoDelay)
         end
     end
     
-    if system.getInfo( "platformName" ) == "Android" then
-        timer.performWithDelay(4000, delayMap)
-    else
-        createMarkers()
-    end
-    
-    
+    timer.performWithDelay(150, funcaoMudarMapa)
 end
 
 function lib.detalhesFaq(pergunta,resposta)
@@ -2351,7 +2410,6 @@ lib.validadeMask = lib.newMask("__ / __")
 lib.cepMask = lib.newMask("__ . ___ - ___")
 lib.retrieveCardMask =  lib.newMask("_____ - _____")
 lib.validadeMask =  lib.newMask("__ / __")
-
 
 return lib
 
