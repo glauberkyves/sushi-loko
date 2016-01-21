@@ -284,6 +284,10 @@ end
 
 function lib.mostrarLojas(funcRetorno)
     
+    function ANDROID_RETURN_ACTION()
+        lib.composer.gotoScene("main_mais")
+    end
+    
     local grupoLojas = display.newGroup()
     local scrollView
     local tabCidades = {}

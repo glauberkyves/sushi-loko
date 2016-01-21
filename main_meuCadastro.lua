@@ -3,7 +3,10 @@ local scene = lib.composer.newScene()
 
 -- "scene:create()"
 function scene:create( event )
-  
+    
+    function ANDROID_RETURN_ACTION()
+        lib.composer.gotoScene("main_mais")
+    end
     local sceneGroup = self.view
     
     local scrollView
@@ -18,7 +21,7 @@ function scene:create( event )
             lib.composer.gotoScene("main_mais")
         end
         local function botaoEditarTapped()
-             lib.composer.gotoScene("main_editarCadastro")
+            lib.composer.gotoScene("main_editarCadastro")
         end
         
         local backGround = display.newImage("images/login/background.png", lib.centerX, lib.centerY)
@@ -30,7 +33,7 @@ function scene:create( event )
         backGroundSecondLayer.anchorY = 0
         backGroundSecondLayer:scale(lib.scale,lib.scale)
         sceneGroup:insert(backGroundSecondLayer)
-
+        
         local textoLogo = display.newText(sceneGroup, lib.textos.textLogoMeuCadastro, lib.centerX, lib.topY+60, lib.textFont, 60)
         textoLogo = lib.maxWidth(textoLogo,380, 72)
         textoLogo:setFillColor(lib.textLogoColor[1],lib.textLogoColor[2],lib.textLogoColor[3])
@@ -58,14 +61,14 @@ function scene:create( event )
             hideBackground = false,
             hideScrollBar  = true ,
             backgroundColor = {lib.scrollViewBackColor[1],lib.scrollViewBackColor[2],lib.scrollViewBackColor[3] },
-            }   
+        }   
         scrollView = lib.widget.newScrollView(opts)  
         sceneGroup:insert(scrollView)
-
+        
         local barrinhaVermalhaCima = display.newImage("images/cadastro/barrinhaVermelha.png", lib.centerX, lib.topY+297)
         barrinhaVermalhaCima:scale(lib.scale,1)
         sceneGroup:insert(barrinhaVermalhaCima)
-
+        
         local barrinhaVermalhaBaixo = display.newImage("images/cadastro/barrinhaVermelha.png", lib.centerX, lib.bottomY-6)
         barrinhaVermalhaBaixo:scale(lib.scale,1)
         sceneGroup:insert(barrinhaVermalhaBaixo)  
@@ -132,7 +135,7 @@ function scene:create( event )
     
     layout()
     
-
+    
 end
 
 scene:addEventListener( "create", scene )

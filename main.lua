@@ -30,11 +30,12 @@ local function onKeyEvent( event )
     -- Print which key was pressed down/up
     local message = "Key '" .. event.keyName .. "' was pressed " .. event.phase
     print( message )
-
+    
     -- If the "back" key was pressed on Android or Windows Phone, prevent it from backing out of the app
     if ( event.keyName == "back" ) then
         if ( platformName == "Android" ) or ( platformName == "WinPhone" ) then
-            native.setKeyboardFocus(nil)
+            ANDROID_RETURN_ACTION()
+            
             return true
         end
     end

@@ -3,7 +3,11 @@ local scene = lib.composer.newScene()
 
 -- "scene:create()"
 function scene:create( event )
-  
+    
+    function ANDROID_RETURN_ACTION()
+        lib.composer.gotoScene("main_login")
+    end
+    
     local sceneGroup = self.view
     
     local cena = "cadastro"
@@ -12,7 +16,7 @@ function scene:create( event )
     local campoSexoMCliqued , campoSexoFCliqued , sexo
     
     local layout
-   
+    
     
     function layout()
         
@@ -38,36 +42,36 @@ function scene:create( event )
                 local function logar()
                     
                     local function funcaoRetorno(decoded)
-                
-                           local tabela = {}
-                           tabela.id = decoded.dados.idUsuario
-                           tabela.nome = decoded.dados.noPessoa or ""
-                           tabela.cpf = decoded.dados.nuCpf or ""
-                           tabela.email = decoded.dados.noEmail or ""
-                           tabela.sexo = decoded.dados.sgSexo or "u"
-                           tabela.dataNasc = decoded.dados.dtNascimento or "" 
-                           tabela.cep = decoded.dados.nuCep or "" 
-
-                           tabela.telefone = decoded.dados.nuTelefone or "5555555555"
-                           tabela.cidade = decoded.dados.arrEndereco.noMunicipio or "bra"
-                           tabela.estado = decoded.dados.arrEndereco.noEstado or "bra"
-
-                           local dia = tabela.dataNasc:sub(1,2)
-                           local mes = tabela.dataNasc:sub(4,5)
-                           local ano = tabela.dataNasc:sub(7,10)
-
-                           lib.OneSignal.SendTags({["sexo"] = tabela.sexo,["cidade"] = tabela.cidade,["estado"] = tabela.estado,["dia"] = dia , ["mes"] = mes , ["ano"] = ano  });
-
-                           lib.dadosUsuario = tabela 
-                           lib.loadsave.saveTable(tabela, "dadosUsuario.json")   
-                           lib.loadsave.saveTable(1,"logado.json") 
-                           lib.dadosUsuario = lib.loadsave.loadTable("dadosUsuario.json")
-                           lib.composer.gotoScene("main_menu")
-                
+                        
+                        local tabela = {}
+                        tabela.id = decoded.dados.idUsuario
+                        tabela.nome = decoded.dados.noPessoa or ""
+                        tabela.cpf = decoded.dados.nuCpf or ""
+                        tabela.email = decoded.dados.noEmail or ""
+                        tabela.sexo = decoded.dados.sgSexo or "u"
+                        tabela.dataNasc = decoded.dados.dtNascimento or "" 
+                        tabela.cep = decoded.dados.nuCep or "" 
+                        
+                        tabela.telefone = decoded.dados.nuTelefone or "5555555555"
+                        tabela.cidade = decoded.dados.arrEndereco.noMunicipio or "bra"
+                        tabela.estado = decoded.dados.arrEndereco.noEstado or "bra"
+                        
+                        local dia = tabela.dataNasc:sub(1,2)
+                        local mes = tabela.dataNasc:sub(4,5)
+                        local ano = tabela.dataNasc:sub(7,10)
+                        
+                        lib.OneSignal.SendTags({["sexo"] = tabela.sexo,["cidade"] = tabela.cidade,["estado"] = tabela.estado,["dia"] = dia , ["mes"] = mes , ["ano"] = ano  });
+                        
+                        lib.dadosUsuario = tabela 
+                        lib.loadsave.saveTable(tabela, "dadosUsuario.json")   
+                        lib.loadsave.saveTable(1,"logado.json") 
+                        lib.dadosUsuario = lib.loadsave.loadTable("dadosUsuario.json")
+                        lib.composer.gotoScene("main_menu")
+                        
                     end
                     
                     lib.servicos({["nuCpf"] = cpf , ["noSenha"] = senha},"mobile/usuario/autenticar",funcaoRetorno)
-                
+                    
                 end
                 
                 lib.composer.gotoScene("main_login")
@@ -75,39 +79,48 @@ function scene:create( event )
                 
             end
             
-
-
-            if nome == ""  or senha == "" or confSenha =="" or cpf =="" then
-                 lib.criarPopUp(lib.textos.preenchaNomeSenha)
-
+            if nome == ""  then
+                lib.criarPopUp(lib.textos.preenchaNome)
+                
+            elseif   checkData == "" then
+                lib.criarPopUp(lib.textos.preenchaDataNasc)
+                
+            elseif   checkTelefone == "" then
+                lib.criarPopUp(lib.textos.preenchaTelefone)
+                
+            elseif   email == "" then
+                lib.criarPopUp(lib.textos.preenchaEmail)     
+                
+            elseif  senha ~=   confSenha then     
+                lib.criarPopUp(lib.textos.senhasNaoConferem) 
+                
+            elseif    string.len(senha) <6 then
+                lib.criarPopUp(lib.textos.senha6digitos)
+                
+            elseif  string.len(checkCpf) ~= 11 then
+                lib.criarPopUp(lib.textos.cpfIncompleto)    
+                
+            elseif lib.validarCpf(checkCpf) == false then
+                lib.criarPopUp(lib.textos.cpfInvalido) 
+                
+            elseif sexo == nil then
+                lib.criarPopUp(lib.textos.selecioneSexo)
+                
             elseif  senha ~=   confSenha then     
                 print(senha, confSenha)
-                   lib.criarPopUp(lib.textos.senhasNaoConferem) 
-
-            elseif    string.len(senha) <6 then
-                        
-                    lib.criarPopUp(lib.textos.senha6digitos)
-                   
-
-            elseif  string.len(checkCpf) ~= 11 then
-
-
-                lib.criarPopUp(lib.textos.cpfIncompleto)    
-
-
-            elseif lib.validarCpf(checkCpf) == false then
-
-                 lib.criarPopUp(lib.textos.cpfInvalido) 
-
-            else
+                lib.criarPopUp(lib.textos.novasSenhasNaoConferem) 
                 
+            elseif  senha ~= "" and  string.len(senha) <6 then
+                lib.criarPopUp(lib.textos.novaSenha6digitos)
+                
+            elseif  string.len(checkData) ~= 8 then
+                lib.criarPopUp(lib.textos.dataIncompleta)
+                
+            elseif string.len(checkTelefone)< 8  then
+                lib.criarPopUp(lib.textos.telefoneIncompleto) 
+            else 
                 lib.servicos({["nuCpf"] = checkCpf , ["nuTelefone"] = checkTelefone ,["dtNascimento"] = checkData, ["noSenha"] = senha, ["noPessoa"] = finalName, ["noEmail"] = email,["sgSexo"] = sexo,["nuCep"] = checkCep},"mobile/usuario/cadastrar",funcaoRetorno)
-            
             end
-
-            
-          
-            
         end
         
         local function botaoVoltarTapped()
@@ -157,16 +170,16 @@ function scene:create( event )
         
         
         local opts = {
-        top = lib.topY+132,
-        left = lib.leftX,
-        width = lib.distanceX,
-        height = lib.distanceY-264,
-        bottomPadding = 90,
-        horizontalScrollDisabled = true,
-        verticalScrollDisabled = false,
-        hideBackground = false,
-        hideScrollBar  = true ,
-        backgroundColor = {lib.scrollViewBackColor[1],lib.scrollViewBackColor[2],lib.scrollViewBackColor[3] },
+            top = lib.topY+132,
+            left = lib.leftX,
+            width = lib.distanceX,
+            height = lib.distanceY-264,
+            bottomPadding = 90,
+            horizontalScrollDisabled = true,
+            verticalScrollDisabled = false,
+            hideBackground = false,
+            hideScrollBar  = true ,
+            backgroundColor = {lib.scrollViewBackColor[1],lib.scrollViewBackColor[2],lib.scrollViewBackColor[3] },
         }   
         lib.scrollView[cena] = lib.widget.newScrollView(opts)  
         sceneGroup:insert(lib.scrollView[cena])
@@ -186,21 +199,21 @@ function scene:create( event )
         campoSexoMText.anchorX = 0
         campoSexoMText:setFillColor(lib.textLightColor[1],lib.textLightColor[2],lib.textLightColor[3])
         lib.scrollView[cena]:insert(campoSexoMText) 
-
+        
         local campoSexoF = display.newImage("images/cadastro/botaoSexoDesmarcado.png", lib.centerX-lib.leftX+75,campoSexoM.y)
         campoSexoF:addEventListener("tap",sexoFTapped)
         lib.scrollView[cena]:insert(campoSexoF)
-
+        
         campoSexoFText = display.newText(lib.textos.feminino , lib.centerX-lib.leftX+125, campoSexoM.y, lib.textFont, 40)
         campoSexoFText = lib.maxWidth(campoSexoFText,150, 56)
         campoSexoFText.anchorX = 0
         campoSexoFText:setFillColor(lib.textLightColor[1],lib.textLightColor[2],lib.textLightColor[3])
         lib.scrollView[cena]:insert(campoSexoFText) 
-
+        
         campoSexoMCliqued = display.newImage("images/cadastro/botaoSexoMasculino.png", lib.centerX-lib.leftX-225, campoSexoM.y)
         campoSexoMCliqued.alpha = 0
         lib.scrollView[cena]:insert(campoSexoMCliqued) 
-
+        
         campoSexoFCliqued = display.newImage("images/cadastro/botaoSexoFeminino.png", lib.centerX-lib.leftX+75, campoSexoM.y)
         campoSexoFCliqued.alpha = 0
         lib.scrollView[cena]:insert(campoSexoFCliqued)
@@ -427,10 +440,10 @@ function scene:create( event )
         lib.scrollView[cena]:insert(lib.tableText[cena] [9])
         
     end
-  
+    
     layout()
-   
-  
+    
+    
 end
 
 scene:addEventListener( "create", scene )

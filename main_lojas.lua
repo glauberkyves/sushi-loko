@@ -42,6 +42,10 @@ function scene:create( event )
         
         carregaPromocao = false
         
+        function ANDROID_RETURN_ACTION()
+            lib.composer.gotoScene("main_menu")
+        end
+        
         local function botaoVoltarTapped()
             lib.composer.gotoScene("main_menu")
         end

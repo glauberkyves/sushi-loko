@@ -13,17 +13,17 @@ function createTextBox()
     
     local function textBoxListener(textEvent)
         
-            if ( textEvent.phase == "began" ) then
-                
-
-            elseif ( textEvent.phase == "ended" or textEvent.phase == "submitted" ) then
-
-
-            elseif ( textEvent.phase == "editing" ) then
-
-
-
-            end
+        if ( textEvent.phase == "began" ) then
+            
+            
+        elseif ( textEvent.phase == "ended" or textEvent.phase == "submitted" ) then
+            
+            
+        elseif ( textEvent.phase == "editing" ) then
+            
+            
+            
+        end
         
     end
     
@@ -39,91 +39,91 @@ end
 
 -- "scene:create()"
 function scene:create( event )
-  
+    
     local sceneGroup = self.view
     
     local layout
     local tableDefaultText , tableText = {} , {}
     
     function campTapped(event)
-    
+        
         local maxChar =  event.target.maxChar or 50
         local mask = event.target.mask or "noMask"
         local inputType = event.target.inputType or "default"
         local maxWidth = event.target.maxWidth or 580
         local maxHeight = event.target.maxHeight or 88
         tableDefaultText[event.target.textEdit].alpha = 0
-
+        
         local function focusTextField()
-
+            
             native.setKeyboardFocus(textField)
-
-
+            
+            
         end
-
+        
         local function deleteTextField(ob)
-
-
-                         if textField.text == "" then
-
-                            tableDefaultText[event.target.textEdit].alpha = 1
-                            tableText[event.target.textEdit].text = ""
-
-                        end
-
-                       textField:removeSelf()
-                       textField = nil
-                       native.setKeyboardFocus( nil )
-
-                       ob.target:removeSelf()
-                       ob.target = nil
-
-                     -- print( lib.cpfMask.getRealText(tableText[event.target.textEdit].text) )
-
-
-
---                local opts = {
---                y = 0,
---                time = 300,
---                }
---                scrollView:scrollToPosition( opts ) 
+            
+            
+            if textField.text == "" then
                 
-               -- return true
-
-        end
-
-        local function textos(textEvent)
-
-            if ( textEvent.phase == "began" ) then
-
-
-              -- tableText[event.target.textEdit].text = lib[mask].apply("")
-
-              textField.text = lib[mask].getRealText(tableText[event.target.textEdit].text)
-              tableText[event.target.textEdit].text = lib[mask].apply(textField.text)
-
-            elseif ( textEvent.phase == "ended" or textEvent.phase == "submitted" ) then
-
-
-            elseif ( textEvent.phase == "editing" ) then
-
-
-                    if string.len(textField.text) <= maxChar then
-
-                        tableText[event.target.textEdit].text = lib[mask].apply(textField.text)
-                        tableText[event.target.textEdit] = lib.maxWidth(tableText[event.target.textEdit],maxWidth, maxHeight)
-
-
-                    else
-
-                        textField.text =  string.sub(textField.text,1,maxChar)  
-
-                    end
-
+                tableDefaultText[event.target.textEdit].alpha = 1
+                tableText[event.target.textEdit].text = ""
+                
             end
-
+            
+            textField:removeSelf()
+            textField = nil
+            native.setKeyboardFocus( nil )
+            
+            ob.target:removeSelf()
+            ob.target = nil
+            
+            -- print( lib.cpfMask.getRealText(tableText[event.target.textEdit].text) )
+            
+            
+            
+            --                local opts = {
+            --                y = 0,
+            --                time = 300,
+            --                }
+            --                scrollView:scrollToPosition( opts ) 
+            
+            -- return true
+            
+        end
+        
+        local function textos(textEvent)
+            
+            if ( textEvent.phase == "began" ) then
+                
+                
+                -- tableText[event.target.textEdit].text = lib[mask].apply("")
+                
+                textField.text = lib[mask].getRealText(tableText[event.target.textEdit].text)
+                tableText[event.target.textEdit].text = lib[mask].apply(textField.text)
+                
+            elseif ( textEvent.phase == "ended" or textEvent.phase == "submitted" ) then
+                
+                
+            elseif ( textEvent.phase == "editing" ) then
+                
+                
+                if string.len(textField.text) <= maxChar then
+                    
+                    tableText[event.target.textEdit].text = lib[mask].apply(textField.text)
+                    tableText[event.target.textEdit] = lib.maxWidth(tableText[event.target.textEdit],maxWidth, maxHeight)
+                    
+                    
+                else
+                    
+                    textField.text =  string.sub(textField.text,1,maxChar)  
+                    
+                end
+                
+            end
+            
         end 
-    
+        
         textField = native.newTextField( 0,-1000, 447, 50 )
         textField.x = -1000
         textField.y = -1000
@@ -138,10 +138,22 @@ function scene:create( event )
         deleteRect:addEventListener("touch",deleteTextField)
         
         timer.performWithDelay(200, focusTextField)
-   
-end
+        
+    end
     
     function layout()
+        
+        function ANDROID_RETURN_ACTION()
+            if textBox then
+                textBox:removeSelf()
+                textBox = nil
+            end
+            
+            --best to remove keyboard focus, in case keyboard is still on screen
+            native.setKeyboardFocus(nil)
+            
+            lib.composer.gotoScene("main_menu")
+        end
         
         local tabLojaSelecionada
         local lojaSelecionada
@@ -156,8 +168,10 @@ end
             textBox.y = -1000
         end
         local function textBoxVoltaNaTela()
-            textBox.x = lib.centerX
-            textBox.y = lib.centerY-80
+            if textBox then
+                textBox.x = lib.centerX
+                textBox.y = lib.centerY-80                
+            end
         end
         
         local function botaoVoltarTapped()
@@ -213,15 +227,15 @@ end
                 textBoxSaiDaTela()
                 
                 local tabResposta = {
-                {idResposta = lib.opiniao.item1.id,nuResposta = item1 },
-                {idResposta = lib.opiniao.item2.id,nuResposta = item2 },
-                {idResposta = lib.opiniao.item3.id,nuResposta = item3 },
+                    {idResposta = lib.opiniao.item1.id,nuResposta = item1 },
+                    {idResposta = lib.opiniao.item2.id,nuResposta = item2 },
+                    {idResposta = lib.opiniao.item3.id,nuResposta = item3 },
                 }
                 
                 lib.servicos({["tipo"]= 2,["idRequisicao"] = "",["idUsuario"] = lib.dadosUsuario.id ,["idFranquia"]=tabLojaSelecionada.id, ["dsResposta"] = textBox.text,["arrResposta"] = tabResposta },"mobile/feedback/responder",funcaoRetornoOpiniao)
                 
             end
-                
+            
         end
         local function botaoSelecionarLojaTapped()
             local function funcRetornoLojas(tabLoja)
@@ -266,7 +280,7 @@ end
         local campoOpiniao = display.newImage("images/opiniao/caixa.png", lib.centerX, lib.centerY-80)
         campoOpiniao:addEventListener("tap",textBoxVoltaNaTela)
         sceneGroup:insert(campoOpiniao)
-
+        
         
         item1Text = display.newText(sceneGroup, lib.opiniao.item1.nome, lib.centerX - 295, lib.centerY+80, lib.textFont, 36)
         item1Text.anchorX = 0
@@ -327,20 +341,20 @@ end
         
         
     end
-
+    
     layout()
     
 end
 
 function scene:show( event )
-
+    
     local sceneGroup = self.view
     local phase = event.phase
-
+    
     if ( phase == "will" ) then
         -- Called when the scene is still off screen (but is about to come on screen).
     elseif ( phase == "did" ) then
-       createTextBox()
+        createTextBox()
     end
 end
 

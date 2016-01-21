@@ -5,11 +5,15 @@ local scene = lib.composer.newScene()
 -- "scene:create()"
 
 function scene:create( event )
-  
+    
     local sceneGroup = self.view
     
+    function ANDROID_RETURN_ACTION()
+        lib.composer.gotoScene("main_mais")
+    end
+    
     local function botaoVoltarTapped()
-            lib.composer.gotoScene("main_mais")
+        lib.composer.gotoScene("main_mais")
     end
     local function buttonTapped(event)
         
@@ -17,16 +21,16 @@ function scene:create( event )
         lib.detalhesFaq(event.target.pergunta,event.target.resposta)
         
     end
-
+    
     local backGround = display.newImage("images/login/background.png", lib.centerX, lib.centerY)
     backGround:scale(lib.scale,lib.scale)
     sceneGroup:insert(backGround)
-
+    
     local backGroundSecondLayer = display.newImage("images/login/secondBackground.png", lib.centerX, lib.topY+120)
     backGroundSecondLayer.anchorY = 0
     backGroundSecondLayer:scale(lib.scale,lib.scale)
     sceneGroup:insert(backGroundSecondLayer)
-
+    
     local textoLogo = lib.maxWidth(display.newText(sceneGroup, lib.textos.titulofaq, lib.centerX, lib.topY+60, lib.textFont, 60),380,72) 
     textoLogo:setFillColor(lib.textLogoColor[1],lib.textLogoColor[2],lib.textLogoColor[3])
     
@@ -60,14 +64,14 @@ function scene:create( event )
         hideBackground = false,
         hideScrollBar  = true ,
         backgroundColor = {lib.scrollViewBackColor[1],lib.scrollViewBackColor[2],lib.scrollViewBackColor[3] },
-        }   
+    }   
     scrollView = lib.widget.newScrollView(opts)  
     sceneGroup:insert(scrollView)
-
+    
     local barrinhaVermalhaCima = display.newImage("images/cadastro/barrinhaVermelha.png", lib.centerX, lib.topY+297)
     barrinhaVermalhaCima:scale(lib.scale,1)
     sceneGroup:insert(barrinhaVermalhaCima)
-
+    
     local barrinhaVermalhaBaixo = display.newImage("images/cadastro/barrinhaVermelha.png", lib.centerX, lib.bottomY-6)
     barrinhaVermalhaBaixo:scale(lib.scale,1)
     sceneGroup:insert(barrinhaVermalhaBaixo)
@@ -76,7 +80,7 @@ function scene:create( event )
     local buttons = {}
     
     local perguntaOpts = {
-         --parent = scrollView,
+        --parent = scrollView,
         text ="oi oi oi oi o",     
         x = lib.centerX,
         y = 0,
@@ -108,8 +112,8 @@ function scene:create( event )
         
         
     end
-
-
+    
+    
 end
 
 scene:addEventListener( "create", scene )

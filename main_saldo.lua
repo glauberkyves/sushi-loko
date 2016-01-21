@@ -4,9 +4,12 @@ local scene = lib.composer.newScene()
 
 -- "scene:create()"
 function scene:create( event )
-  
+    function ANDROID_RETURN_ACTION()
+        lib.composer.gotoScene("main_menu")
+    end
+    
     local sceneGroup = self.view
-
+    
     local layout
     
     
@@ -21,13 +24,13 @@ function scene:create( event )
             
             local function funcaoRetorno(decoded)
                 
-               saldoText.text = lib.textos.sifrao..decoded.credito 
-               saldoText = lib.maxWidth(saldoText,530,184)
-               if decoded.codigo ~=nil and decoded.codigo ~= "" then
+                saldoText.text = lib.textos.sifrao..decoded.credito 
+                saldoText = lib.maxWidth(saldoText,530,184)
+                if decoded.codigo ~=nil and decoded.codigo ~= "" then
                     textocodigo.text = decoded.codigo
                     textocodigo.alpha = 1
                     textoUltimoCodigo.alpha = 1
-               end
+                end
                 
             end
             
@@ -39,21 +42,21 @@ function scene:create( event )
             local function funcaoRetornoCodigo(decoded)
                 
                 
-               lib.criarPopUp(lib.textos.informeOCodigo..lib.textos.ultimoCodigo..decoded.codigo,nil,true) 
-               textocodigo.text = decoded.codigo
+                lib.criarPopUp(lib.textos.informeOCodigo..lib.textos.ultimoCodigo..decoded.codigo,nil,true) 
+                textocodigo.text = decoded.codigo
                 
             end
             
             local function funcaoRetorno(senha)
                 print( lib.dadosUsuario.id,senha,valor)
-                 lib.servicos({["idUsuario"] = lib.dadosUsuario.id ,["noSenha"] = senha, ["nuValor"] = valor},"mobile/transacao/bonus/obter-senha",funcaoRetornoCodigo)
+                lib.servicos({["idUsuario"] = lib.dadosUsuario.id ,["noSenha"] = senha, ["nuValor"] = valor},"mobile/transacao/bonus/obter-senha",funcaoRetornoCodigo)
             end
             
             lib.confirmarSenha(lib.textos.confirmarOperacao,funcaoRetorno)
         end
         local function usarSaldoTapped()
             
-           
+            
             lib.confirmarValor(usarSaldo)
             
         end
@@ -94,15 +97,15 @@ function scene:create( event )
         sceneGroup:insert(saldoText)
         
         local options = {
-        text = lib.textos.bonusParaUsar,
-        x =  lib.centerX, 
-        y = lib.centerY+110,
-        width = 530,
-        height = 116,
-        font = lib.textFont,
-        fontSize = 48,
-        align = "center", 
-        
+            text = lib.textos.bonusParaUsar,
+            x =  lib.centerX, 
+            y = lib.centerY+110,
+            width = 530,
+            height = 116,
+            font = lib.textFont,
+            fontSize = 48,
+            align = "center", 
+            
         }
         local textoExplicacaoSaldo = display.newText( options )
         textoExplicacaoSaldo:setFillColor(lib.textConteudoColor[1],lib.textConteudoColor[2],lib.textConteudoColor[3])
@@ -123,9 +126,9 @@ function scene:create( event )
         
     end
     
-        
+    
     layout()
-
+    
 end
 
 scene:addEventListener( "create", scene )

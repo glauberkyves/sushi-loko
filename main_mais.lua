@@ -3,9 +3,12 @@ local scene = lib.composer.newScene()
 
 -- "scene:create()"
 function scene:create( event )
-  
+    function ANDROID_RETURN_ACTION()
+        lib.composer.gotoScene("main_menu")
+    end
+    
     local sceneGroup = self.view
-
+    
     local layout
     
     function layout()
@@ -26,8 +29,20 @@ function scene:create( event )
         local function botaoVoltarTapped()
             lib.composer.gotoScene("main_menu")
         end
-        local function botaoCadastroTapped()
+        
+        local function funcaoRetornoCodigo()
             lib.composer.gotoScene("main_meuCadastro")
+        end
+        
+        local function funcaoRetornoFalse()
+        end
+        
+        local function funcaoRetorno(senha)
+            lib.servicos({["nuCpf"] = lib.dadosUsuario.cpf , ["noSenha"] = senha},"mobile/usuario/autenticar",funcaoRetornoCodigo,funcaoRetornoFalse)
+        end
+        
+        local function botaoCadastroTapped()
+            lib.confirmarSenha(lib.textos.confirmarOperacao,funcaoRetorno)
         end
         local function botaoEditarCadastroTapped()
             lib.composer.gotoScene("main_editarCadastro")
@@ -70,14 +85,14 @@ function scene:create( event )
         local botaoCadastro = display.newImage("images/mais/botaoMeuCadastro.png", lib.centerX-10, lib.centerY-100)
         botaoCadastro:addEventListener("tap",botaoCadastroTapped)
         sceneGroup:insert(botaoCadastro)
-
---        local botaoEditarCadastro = display.newImage("images/mais/botaoEditarCadastro.png", lib.centerX-10, lib.centerY+21)
---        botaoEditarCadastro:addEventListener("tap",botaoEditarCadastroTapped)
---        sceneGroup:insert(botaoEditarCadastro)
---
---        local botaoEsqueciSenha = display.newImage("images/mais/botaoEsqueciMinhaSenha.png", lib.centerX-10, lib.centerY+138)
---        botaoEsqueciSenha:addEventListener("tap",lib.esqueciMinhaSenha)
---        sceneGroup:insert(botaoEsqueciSenha)
+        
+        --        local botaoEditarCadastro = display.newImage("images/mais/botaoEditarCadastro.png", lib.centerX-10, lib.centerY+21)
+        --        botaoEditarCadastro:addEventListener("tap",botaoEditarCadastroTapped)
+        --        sceneGroup:insert(botaoEditarCadastro)
+        --
+        --        local botaoEsqueciSenha = display.newImage("images/mais/botaoEsqueciMinhaSenha.png", lib.centerX-10, lib.centerY+138)
+        --        botaoEsqueciSenha:addEventListener("tap",lib.esqueciMinhaSenha)
+        --        sceneGroup:insert(botaoEsqueciSenha)
         
         local botaoExtrato = display.newImage("images/mais/botaoExtrato.png", lib.centerX-10, lib.centerY+21)--138
         botaoExtrato:addEventListener("tap",botaoExtratoTapped)
@@ -93,9 +108,9 @@ function scene:create( event )
         
         
     end
-
+    
     layout()
-
+    
 end
 
 scene:addEventListener( "create", scene )
