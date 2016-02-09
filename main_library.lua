@@ -620,7 +620,13 @@ function lib.criarMapa(markerTouched)
             myMap.y = lib.centerY+(lib.topBarSize-lib.bottomBarSize)/2
         else
             myMap = native.newMapView( lib.centerX, lib.centerY+55, lib.distanceX, lib.distanceY-135 )
-            delayPerformance = timer.performWithDelay(5000, funcaoDelay)
+            locationTable = myMap:getUserLocation()
+            
+            if locationTable.latitude ~= nil and locationTable.longitude~= nil then
+                myMap:setRegion (locationTable.latitude , locationTable.longitude ,1 ,1)
+            end
+            
+            getVersion()
         end
     end
     
