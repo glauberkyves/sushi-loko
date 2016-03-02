@@ -11,7 +11,7 @@ lib.textDarkColor = {0.19,0.19,0.19}
 lib.textConteudoColor = {0,0,0}
 lib.imagemBackColor = {0.92,0.92,0.92}
 lib.barraCardapioColor = {0.96,0.96,0.96}
-lib.tituloCardapioColor = {0.67,0,0}
+lib.tituloCardapioColor = {0.67,0,0}  
 lib.saldoColor = {0.67,0,0}
 lib.successTextColor = {0,0,0}
 lib.errorTextColor = {0,0,0}
@@ -94,8 +94,42 @@ function lib.deletaCarregando()
         grupoCarregando = nil
     end
     
-end
+end 
 
+function lib.d(t)
+    local print_r_cache = {}
+    local function sub_print_r(t, indent)
+        if (print_r_cache[tostring(t)]) then
+            print(indent .. "*" .. tostring(t))
+        else
+            print_r_cache[tostring(t)] = true
+            if (type(t) == "table") then
+                for pos, val in pairs(t) do
+                    if (type(val) == "table") then
+                        print(indent .. "[" .. pos .. "] => " .. tostring(t) .. " {")
+                        sub_print_r(val, indent .. string.rep(" ", string.len(pos) + 8))
+                        print(indent .. string.rep(" ", string.len(pos) + 6) .. "}")
+                    elseif (type(val) == "string") then
+                        print(indent .. "[" .. pos .. '] => "' .. val .. '"')
+                    else
+                        print(indent .. "[" .. pos .. "] => " .. tostring(val))
+                    end
+                end
+            else
+                print(indent .. tostring(t))
+            end
+        end
+    end
+    
+    if (type(t) == "table") then
+        print(tostring(t) .. " {")
+        sub_print_r(t, "  ")
+        print("}")
+    else
+        sub_print_r(t, "  ")
+    end
+    print()
+end
 
 lib.key       = 'lAtM86mDWBMMXHBMu/I7jXLh9Unn4i4='
 lib.iv        = '3JHJCpIKFqvcdg=='
@@ -147,7 +181,7 @@ function lib.servicos(tabelaDados,urlServico,funcaoRetorno,validoFalseFunc)
             
             print(event.status)
             print(lib.decryptRequest(event.response))
-            --print(event.response)
+             print(event.response)
             
             if event.status == 200 then
                 decoded = lib.json.decode( lib.decryptRequest(event.response) )

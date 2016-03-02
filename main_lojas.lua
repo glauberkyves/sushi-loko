@@ -236,9 +236,9 @@ function scene:create( event )
         
         local function botaoVoltarTapped()
             layOut()
-        end
+        end   
         local function funcaoRetornoCardapio(decoded)
-            
+              
             local posY 
             local reposicionarConteudo
             
@@ -247,7 +247,7 @@ function scene:create( event )
                 
                 lib.detalhesCardapio(event.target.nomeProduto,event.target.valor,event.target.descricao,event.target.urlImagem)
                 
-            end
+            end  
             local function tituloTapped(event)
                 tabelaCardapio[event.target.num].expand = tabelaCardapio[event.target.num].expand*-1
                 reposicionarConteudo()
@@ -265,6 +265,7 @@ function scene:create( event )
                     
                     posY = scrollView._view.height
                     
+                    tabelaCardapio[i].expand = -1 
                     conteudo[i] = {}
                     options[i] = {}
                     conteudo[i].produtos = {}
@@ -282,7 +283,7 @@ function scene:create( event )
                     scrollView:insert(conteudo[i].nomeCardapio)
                     conteudo[i].nomeCardapio = lib.maxWidth(conteudo[i].nomeCardapio,lib.distanceX-60, 56)
                     
-                    options[i] = display.newText( "-", lib.rightX-35, posY+47, lib.textFont, 48)
+                    options[i] = display.newText( "+", lib.rightX-35, posY+47, lib.textFont, 48)
                     options[i]:setFillColor(lib.tituloCardapioColor[1],lib.tituloCardapioColor[2],lib.tituloCardapioColor[3])
                     scrollView:insert(options[i])
                     
@@ -357,6 +358,8 @@ function scene:create( event )
                     conteudo[i].nomeCardapio.y = positionY + 45
                     options[i].y = positionY + 45
                     
+                    print(tabelaCardapio[i].expand)  
+                    
                     if tabelaCardapio[i].expand == 1 then 
                         
                         if conteudo[i].rectPreto ~= nil then
@@ -384,7 +387,7 @@ function scene:create( event )
                             
                         end
                         
-                    else
+                    else 
                         
                         if conteudo[i].rectPreto ~= nil then
                             conteudo[i].rectPreto.y = positionY + 100
@@ -503,7 +506,7 @@ function scene:create( event )
         
         
     end
-    function promocoes()
+    function promocoes() 
         
         criaGrupos()
         
